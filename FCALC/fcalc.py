@@ -40,16 +40,16 @@ class Fcalc(object):
         # Les fonction
 
         # fonction de stack
-        Function(self, lambda x : (x,x) , nb_args = 1 ,bt_text = "Dup", key = "Return", is_return = True, delete1car = False)
+        Function(self, lambda x : (x,x) , nb_args = 1 ,bt_text = "Dup", key = ["Return","KP_Enter"], is_return = True, delete1car = False)
         Function(self, lambda x : () , nb_args = 1 ,bt_text = "CE", key = "Delete", delete1car = False)
         Function(self, lambda x, y : (y,x)  , nb_args = 2 ,bt_text = "SWAP", key = ["s","S"])
         Function(self, lambda *x : ()  , nb_args = "All" ,bt_text = "CLEAR")
         Function(self, lambda *x : x[1:]+(x[0],)  , nb_args = "All" ,bt_text = "ROLL", key = ["r", "R"])
         #Opérations basiques
-        Function(self, lambda x,y : x+y , nb_args = 2 ,bt_text = "+", key = "plus")
-        Function(self, lambda x,y : x-y  , nb_args = 2 ,bt_text = "-", key = "minus")
-        Function(self, lambda x,y : x*y  , nb_args = 2 ,bt_text = "*", key = "asterisk")
-        Function(self, lambda x,y : x/y  , nb_args = 2 ,bt_text = "/", key = "slash")
+        Function(self, lambda x,y : x+y , nb_args = 2 ,bt_text = "+", key = ["plus","KP_Add"])
+        Function(self, lambda x,y : x-y  , nb_args = 2 ,bt_text = "-", key = ["minus","KP_Subtract"])
+        Function(self, lambda x,y : x*y  , nb_args = 2 ,bt_text = "*", key = ["asterisk","KP_Multiply"])
+        Function(self, lambda x,y : x/y  , nb_args = 2 ,bt_text = "/", key = ["slash","KP_Divide"])
         Function(self, lambda x : 1/x  , nb_args = 1 ,bt_text = "1/x", key = ["i","I"])
         #Fonction math #TODO : gestion DEG-RAD
         Function(self, lambda *x : math.pi , nb_args = 0 ,bt_text = "PI")
