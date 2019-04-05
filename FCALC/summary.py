@@ -23,7 +23,7 @@ class Summary(tkinter.Frame):
 
         '''
         self.fcalc = fcalc
-        tkinter.Frame.__init__(self, fcalc.window, relief = 'groove',borderwidth = 5, *args, **kw)
+        tkinter.Frame.__init__(self, fcalc.window, relief = 'groove',borderwidth = 2, *args, **kw)
         self.v_type = tkinter.StringVar()
         self.value = tkinter.DoubleVar()
         self.value.set(0)
