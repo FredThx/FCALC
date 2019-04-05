@@ -5,6 +5,7 @@ from FCALC.stack import *
 from FCALC.function import *
 from FUTIL.my_logging import *
 from .stack_item import *
+from .summary import *
 import math
 
 class Fcalc(object):
@@ -29,12 +30,18 @@ class Fcalc(object):
         # Une zone avec la pile
         self.stack = Stack(self,300)
         self.stack.grid(column = 1, row = 0)
+        # Deg - Rad
+        #TODO
+
         # La ligne de commandes
         self.v_command_line = tkinter.StringVar()
         self.t_command_line = tkinter.Entry(self.window, textvariable = self.v_command_line)
         self.t_command_line.grid(column = 1, row = 1)
         self.t_command_line.focus_set()
-
+        # La zone des sommes
+        self.summary = Summary(self)
+        self.summary.grid(column = 2, row = 0)
+        # key manager
         self.window.bind_all("<Key>", self.key_manager)
 
         # Les fonction

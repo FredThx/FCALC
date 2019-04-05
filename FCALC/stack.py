@@ -40,6 +40,7 @@ class Stack(VerticalScrolledFrame):
             args.append(item.get())
             item.destroy()
         args.reverse()
+        self.is_updated()
         return tuple(args)
 
     def get_all(self):
@@ -57,3 +58,14 @@ class Stack(VerticalScrolledFrame):
             self.items.append(item)
             item.grid()
             logging.debug("Put %s to stack"%value)
+        self.is_updated()
+
+    def get_values(self):
+        '''Return a list of values in the stack
+        '''
+        return [item.get() for item in self.items]
+
+    def is_updated(self):
+        '''Execute when the stack updated
+        '''
+        self.fcalc.summary.update()
