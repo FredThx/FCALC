@@ -60,10 +60,17 @@ class Stack(VerticalScrolledFrame):
             logging.debug("Put %s to stack"%value)
         self.is_updated()
 
-    def get_values(self):
+    def get_values(self, nb = None):
         '''Return a list of values in the stack
+            nb  :   nb de valeur (default : None => All)
         '''
-        return [item.get() for item in self.items]
+        if nb==None:
+            return [item.get() for item in self.items]
+        else:
+            if len(self.items)<nb:
+                raise Fcalc_error_stacktoosmall(nb, len(self.items))
+            else:
+                return [item.get() for item in self.items][-nb:]
 
     def is_updated(self):
         '''Execute when the stack updated

@@ -8,6 +8,7 @@ from .stack_item import *
 from .summary import *
 from .options import *
 import math
+import clipboard
 
 class Fcalc(object):
     '''Application Calculatrice
@@ -47,6 +48,8 @@ class Fcalc(object):
         self.summary.grid(column = 2, row = 1)
         # key manager
         self.window.bind_all("<Key>", self.key_manager)
+        # CTRL-C for copy
+        self.window.bind_all("<Control-c>", self.ctrlc)
 
         # Les fonction
 
@@ -75,12 +78,21 @@ class Fcalc(object):
     def key_manager(self, event):
         ''' MAnage the key events
         '''
-        logging.debug("Key pressed : %s."%event.keysym)
+        logging.debug("Key pressed : '%s'"%event.keysym)
         if event.keysym in self.keys:
             f = self.keys[event.keysym]
             if f.delete1car:
                 self.v_command_line.set(self.command_line()[0:-1])
             f._function()
+
+    def ctrlc(self, event):
+        '''Intercept CRTL-C for copy to clipboard
+        '''
+        logging.debug("CRTL-C")
+        if len(self.v_command_line.get())==0:
+            clipboard.copy(str(self.stack.get_values(1)[0]))
+        else:
+            clipboard.copy(self.v_command_line.get())
 
 
     def command_line(self):
