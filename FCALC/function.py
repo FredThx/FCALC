@@ -15,7 +15,7 @@ import math
 class Function(object):
     ''' A Fcal function
     '''
-    def __init__(self, fcalc, function, nb_args = 1 ,bt_text = None, key = None, is_return = False, delete1car = True ):
+    def __init__(self, fcalc, parent, function, nb_args = 1 ,bt_text = None, key = None, is_return = False, delete1car = True ):
         '''Initialisation
             - bt_parent     :   tkinter parent for buttons
             - nb_args       :   nb of args used in the stack
@@ -28,8 +28,9 @@ class Function(object):
         self.is_return = is_return
         self.delete1car = delete1car
         if bt_text:
-            self.button = tkinter.Button(fcalc.buttons, text = bt_text, command = self._function)
+            self.button = tkinter.Button(parent, text = bt_text, command = self._function)
             self.button.grid() #TODO : options
+
         if key:
             if not type(key)==list:
                 key = [key]
