@@ -48,21 +48,6 @@ class Stack(VerticalScrolledFrame):
         '''
         return self.get(len(self.items))
 
-    def x_put(self, values, function = None, *args):
-        ''' Put value or (value1, value2, ...) in the stack
-            - values            :   value or (value1, value2, ...)
-            - function          :   function off the calcul (optional)
-            - args              :   args of the function
-        '''
-        if type(values)!=tuple:
-            values = [values]
-        for value in values:
-            item = StackItem(self, value, function, *args)
-            self.items.append(item)
-            item.grid()
-            logging.debug("Put %s to stack"%str(item))
-        self.is_updated()
-
     def put_values(self, values):
         ''' Put value or (value1, value2, ...) in the stack
             - values            :   value or (value1, value2, ...)
@@ -80,6 +65,7 @@ class Stack(VerticalScrolledFrame):
         ''' Put items in the stack
         '''
         if type(items)!=tuple:
+            logging.debug('oups')
             items = [items]
         for item in items:
             logging.debug("Put %s to stack"%str(item))

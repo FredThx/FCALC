@@ -11,7 +11,7 @@ from FUTIL.my_logging import *
 class StackItem(tkinter.Label):
     '''Un item de la stack
     '''
-    def __init__(self, stack, value = 0, function = None, *args, **kw):
+    def __init__(self, stack, value = 0, function = None, args = ()):
         '''Initialisation
             - value             : the value
             - function          : function off the calcul (optional)
@@ -68,3 +68,8 @@ class StackItem(tkinter.Label):
         '''Update the label
         '''
         self.v_text.set(str(self))
+
+    def undo(self):
+        ''' Return the args of the function
+        '''
+        return self.args

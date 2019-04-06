@@ -10,6 +10,7 @@ import tkinter as tkinter
 from FCALC.fcalc_error import *
 from FUTIL.my_logging import *
 from .stack_item import *
+import math
 
 class Function(object):
     ''' A Fcal function
@@ -68,14 +69,11 @@ class Function(object):
         if type(values)!=tuple:
             values = [values]
         for value in values:
-            self.fcalc.stack.put_items(StackItem(self.fcalc.stack, value, self, *args))
+            self.fcalc.stack.put_items(StackItem(self.fcalc.stack, value, self, args))
 
 class Function_stack(Function):
     '''Function for stack manipulation
     '''
-    def __init__(self, *args, **kwargs):
-        Function.__init__(self, *args, **kwargs)
-
     def execute_function(self, *args):
         '''Execut the stack manipulation function
         '''
@@ -84,3 +82,35 @@ class Function_stack(Function):
             items = [items]
         for item in items:
             self.fcalc.stack.put_items(item)
+
+class Function_angle_out(Function):
+    '''Function qui renvoie un angle (soit deg, soit rad)
+    '''
+    def execute_function(self, *args):
+        '''Execut the fonction and put result and self to stack
+        '''
+        values = self.function(*[item.get() for item in args])
+        if type(values)!=tuple:
+            values = [values]
+        for value in values:
+            if self.fcalc.options.get('deg_rad')=='rad':
+                self.fcalc.stack.put_items(StackItem(self.fcalc.stack, value, self, args))
+            else:
+                self.fcalc.stack.put_items(StackItem(self.fcalc.stack, math.degrees(value), self, args))
+
+
+
+class Function_angle_in(Function):
+    '''Function qui prend des angles (soit deg, soit rad)
+    '''
+    def execute_function(self, *args):
+        '''Execut the fonction and put result and self to stack
+        '''
+        if self.fcalc.options.get('deg_rad')=='rad':
+            values = self.function(*[item.get() for item in args])
+        else:
+            values = self.function(*[math.radians(item.get()) for item in args])
+        if type(values)!=tuple:
+            values = [values]
+        for value in values:
+                self.fcalc.stack.put_items(StackItem(self.fcalc.stack, value, self, args))

@@ -53,26 +53,28 @@ class Fcalc(object):
 
         # Les fonction
 
-        # fonction de stack
+        # fonction de manipulation de stack (pas d'historisation)
         Function_stack(self, lambda x : (x,x.clone()) , nb_args = 1 ,bt_text = "Dup", key = ["Return","KP_Enter"], is_return = True, delete1car = False)
         Function_stack(self, lambda x : () , nb_args = 1 ,bt_text = "CE", key = "Delete", delete1car = False)
         Function_stack(self, lambda x, y : (y,x)  , nb_args = 2 ,bt_text = "SWAP", key = ["s","S"])
         Function_stack(self, lambda *x : ()  , nb_args = "All" ,bt_text = "CLEAR")
         Function_stack(self, lambda *x : x[1:]+(x[0],)  , nb_args = "All" ,bt_text = "ROLL", key = ["r", "R"])
+        Function_stack(self, lambda x : x.undo() , nb_args = 1 ,bt_text = "Undo", key = ["u","U"])
         #Opérations basiques
         Function(self, lambda x,y : x+y , nb_args = 2 ,bt_text = "+", key = ["plus","KP_Add"])
         Function(self, lambda x,y : x-y  , nb_args = 2 ,bt_text = "-", key = ["minus","KP_Subtract"])
         Function(self, lambda x,y : x*y  , nb_args = 2 ,bt_text = "*", key = ["asterisk","KP_Multiply"])
         Function(self, lambda x,y : x/y  , nb_args = 2 ,bt_text = "/", key = ["slash","KP_Divide"])
         Function(self, lambda x : 1/x  , nb_args = 1 ,bt_text = "1/x", key = ["i","I"])
-        #Fonction math #TODO : gestion DEG-RAD
-        Function(self, lambda *x : math.pi , nb_args = 0 ,bt_text = "PI")
-        Function(self, lambda x : math.sin(x) , nb_args = 1 ,bt_text = "SIN")
-        Function(self, lambda x : math.cos(x) , nb_args = 1 ,bt_text = "COS")
-        Function(self, lambda x : math.asin(x) , nb_args = 1 ,bt_text = "ASIN")
-        Function(self, lambda x : math.acos(x) , nb_args = 1 ,bt_text = "ACOS")
-        Function(self, lambda x : math.tan(x) , nb_args = 1 ,bt_text = "TAN")
-        Function(self, lambda x : math.atan(x) , nb_args = 1 ,bt_text = "ATAN")
+        #Fonction Trigo #TODO : gestion DEG-RAD
+        Function_angle_out(self, lambda *x : math.pi , nb_args = 0 ,bt_text = "PI")
+        Function_angle_in(self, lambda x : math.sin(x) , nb_args = 1 ,bt_text = "SIN")
+        Function_angle_in(self, lambda x : math.cos(x) , nb_args = 1 ,bt_text = "COS")
+        Function_angle_out(self, lambda x : math.asin(x) , nb_args = 1 ,bt_text = "ASIN")
+        Function_angle_out(self, lambda x : math.acos(x) , nb_args = 1 ,bt_text = "ACOS")
+        Function_angle_in(self, lambda x : math.tan(x) , nb_args = 1 ,bt_text = "TAN")
+        Function_angle_out(self, lambda x : math.atan(x) , nb_args = 1 ,bt_text = "ATAN")
+        Function_angle_out(self, lambda x : math.atan2(x) , nb_args = 2 ,bt_text = "ATAN2")
 
 
     def key_manager(self, event):
