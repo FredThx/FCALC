@@ -27,8 +27,10 @@ class Options(tkinter.Frame):
         for option in Options.options:
             self.opts[option] = tkinter.StringVar()
             self.opts[option].set(Options.options[option][0])
+            frame = tkinter.LabelFrame(self,text = option)
             for choice in Options.options[option]:
-                tkinter.Radiobutton(self, variable = self.opts[option], text = choice, value = choice, command = self.update).grid( sticky = 'nw')
+                tkinter.Radiobutton(frame, variable = self.opts[option], text = choice, value = choice, command = self.update).grid( sticky = 'nw')
+            frame.grid()
 
 
     def update(self):
