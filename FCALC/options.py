@@ -14,7 +14,8 @@ class Options(tkinter.Frame):
     '''
 
     options = { \
-            'deg_rad' : ['rad', 'deg'] \
+            'deg_rad' : ['rad', 'deg'], \
+            'detail' : ['off', 'on']
             }
 
     def __init__(self, fcalc, *args, **kw):
@@ -33,9 +34,10 @@ class Options(tkinter.Frame):
     def update(self):
         '''Update the value
         '''
-        pass
+        for item in self.fcalc.stack.items:
+            item.update()
 
     def get(self, option):
         '''Return the value of the option
         '''
-        return self.opts[option]
+        return self.opts[option].get()

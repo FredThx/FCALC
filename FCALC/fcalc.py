@@ -26,6 +26,9 @@ class Fcalc(object):
         '''Init the ui
         '''
         self.window.title(self.title)
+        # La zone des options
+        self.options= Options(self)
+        self.options.grid(column = 2, row = 0)
         #Une zone avec des boutons
         self.buttons = tkinter.Frame(self.window)
         self.buttons.grid(column = 0, rowspan =2)
@@ -40,9 +43,6 @@ class Fcalc(object):
         self.t_command_line = tkinter.Entry(self.window, textvariable = self.v_command_line)
         self.t_command_line.grid(column = 1, row = 2)
         self.t_command_line.focus_set()
-        # La zone des options
-        self.options= Options(self)
-        self.options.grid(column = 2, row = 0)
         # La zone des sommes
         self.summary = Summary(self)
         self.summary.grid(column = 2, row = 1)
@@ -54,11 +54,11 @@ class Fcalc(object):
         # Les fonction
 
         # fonction de stack
-        Function(self, lambda x : (x,x) , nb_args = 1 ,bt_text = "Dup", key = ["Return","KP_Enter"], is_return = True, delete1car = False)
-        Function(self, lambda x : () , nb_args = 1 ,bt_text = "CE", key = "Delete", delete1car = False)
-        Function(self, lambda x, y : (y,x)  , nb_args = 2 ,bt_text = "SWAP", key = ["s","S"])
-        Function(self, lambda *x : ()  , nb_args = "All" ,bt_text = "CLEAR")
-        Function(self, lambda *x : x[1:]+(x[0],)  , nb_args = "All" ,bt_text = "ROLL", key = ["r", "R"])
+        Function_stack(self, lambda x : (x,x.clone()) , nb_args = 1 ,bt_text = "Dup", key = ["Return","KP_Enter"], is_return = True, delete1car = False)
+        Function_stack(self, lambda x : () , nb_args = 1 ,bt_text = "CE", key = "Delete", delete1car = False)
+        Function_stack(self, lambda x, y : (y,x)  , nb_args = 2 ,bt_text = "SWAP", key = ["s","S"])
+        Function_stack(self, lambda *x : ()  , nb_args = "All" ,bt_text = "CLEAR")
+        Function_stack(self, lambda *x : x[1:]+(x[0],)  , nb_args = "All" ,bt_text = "ROLL", key = ["r", "R"])
         #Opérations basiques
         Function(self, lambda x,y : x+y , nb_args = 2 ,bt_text = "+", key = ["plus","KP_Add"])
         Function(self, lambda x,y : x-y  , nb_args = 2 ,bt_text = "-", key = ["minus","KP_Subtract"])

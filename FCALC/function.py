@@ -5,11 +5,11 @@ Une fonction de la calculatrice
     avec
     - bouton
     - raccourcis clavier
-
 '''
 import tkinter as tkinter
 from FCALC.fcalc_error import *
 from FUTIL.my_logging import *
+from .stack_item import *
 
 class Function(object):
     ''' A Fcal function
@@ -44,7 +44,7 @@ class Function(object):
         has_command_line = self.fcalc.command_line()
         if has_command_line:
             try:
-                self.fcalc.stack.put(float(self.fcalc.command_line()))
+                self.fcalc.stack.put_values(float(self.fcalc.command_line()))
                 self.fcalc.v_command_line.set("")
             except ValueError as e:
                 logging.info(e)
@@ -54,9 +54,33 @@ class Function(object):
                     args = self.fcalc.stack.get_all()
                 else:
                     args = self.fcalc.stack.get(self.nb_args)
-                self.fcalc.stack.put(self.function(*args))
+                self.execute_function(*args)
             except Fcalc_error_stacktoosmall:
                 logging.info("Not enought arguments.")
             except (ArithmeticError, ValueError) as e:
                 logging.info(e)
                 self.fcalc.stack.put(args)
+
+    def execute_function(self, *args):
+        '''Execut the fonction and put result and self to stack
+        '''
+        values = self.function(*[item.get() for item in args])
+        if type(values)!=tuple:
+            values = [values]
+        for value in values:
+            self.fcalc.stack.put_items(StackItem(self.fcalc.stack, value, self, *args))
+
+class Function_stack(Function):
+    '''Function for stack manipulation
+    '''
+    def __init__(self, *args, **kwargs):
+        Function.__init__(self, *args, **kwargs)
+
+    def execute_function(self, *args):
+        '''Execut the stack manipulation function
+        '''
+        items = self.function(*args)
+        if type(items)!=tuple:
+            items = [items]
+        for item in items:
+            self.fcalc.stack.put_items(item)

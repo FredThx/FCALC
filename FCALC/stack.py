@@ -29,16 +29,16 @@ class Stack(VerticalScrolledFrame):
 
     def get(self, nb_args=1):
         '''Take nb_args value in the stack
-            return a tuple
+            return a tuple of StackItem
         '''
         if len(self.items)<nb_args:
             raise Fcalc_error_stacktoosmall(nb_args, len(self.items))
         args = []
         for i in range(nb_args):
             item = self.items.pop()
-            logging.debug("take %s from stack"%item.get())
-            args.append(item.get())
-            item.destroy()
+            logging.debug("take %s from stack"%str(item))
+            args.append(item.clone())
+            item.destroy()#TODO : verif destroy 100%
         args.reverse()
         self.is_updated()
         return tuple(args)
@@ -48,16 +48,43 @@ class Stack(VerticalScrolledFrame):
         '''
         return self.get(len(self.items))
 
-    def put(self, values):
+    def x_put(self, values, function = None, *args):
         ''' Put value or (value1, value2, ...) in the stack
+            - values            :   value or (value1, value2, ...)
+            - function          :   function off the calcul (optional)
+            - args              :   args of the function
         '''
         if type(values)!=tuple:
             values = [values]
         for value in values:
-            item = StackItem(self,value)
+            item = StackItem(self, value, function, *args)
             self.items.append(item)
             item.grid()
-            logging.debug("Put %s to stack"%value)
+            logging.debug("Put %s to stack"%str(item))
+        self.is_updated()
+
+    def put_values(self, values):
+        ''' Put value or (value1, value2, ...) in the stack
+            - values            :   value or (value1, value2, ...)
+        '''
+        if type(values)!=tuple:
+            values = [values]
+        for value in values:
+            item = StackItem(self, value)
+            self.items.append(item)
+            item.grid()
+            logging.debug("Put %s to stack"%str(item))
+        self.is_updated()
+
+    def put_items(self, *items):
+        ''' Put items in the stack
+        '''
+        if type(items)!=tuple:
+            items = [items]
+        for item in items:
+            logging.debug("Put %s to stack"%str(item))
+            self.items.append(item)
+            item.grid()
         self.is_updated()
 
     def get_values(self, nb = None):
