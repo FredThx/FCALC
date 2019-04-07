@@ -9,7 +9,7 @@ from .stack_item import *
 from .summary import *
 from .options import *
 import math
-import clipboard
+from . import clipboard
 from .buttons_frame import *
 from .version import __version__
 import locale
