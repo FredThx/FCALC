@@ -34,11 +34,9 @@ class Fcalc(object):
 
         #Une zone avec des boutons
         self.buttons = tkinter.Frame(self.window)
-        self.buttons.grid(column = 0, row = 0, rowspan =2, sticky = tkinter.N + tkinter.E + tkinter.W)
         self.buttons.columnconfigure(0,weight=1)
         # Une zone avec options et Summary
         self.zone3 = tkinter.Frame(self.window)
-        self.zone3.grid(column = 2, row = 0, rowspan =2, sticky = tkinter.N + tkinter.E + tkinter.W)
         self.zone3.columnconfigure(0,weight=1)
         # La zone des options
         self.options= Options(self, self.zone3)
@@ -93,37 +91,56 @@ class Fcalc(object):
         Function_angle_out(self, self.bts_trig, lambda x : math.atan(x) , nb_args = 1 ,bt_text = "ATAN")
         Function_angle_out(self, self.bts_trig, lambda x : math.atan2(x) , nb_args = 2 ,bt_text = "ATAN2")
 
-        self.window.columnconfigure(0, minsize = 120, weight = 1)
-        self.window.columnconfigure(1, minsize = 200, weight = 2)
-        self.window.columnconfigure(2, minsize = 100, weight = 1)
-
         # Les menus
-        self.menu_barre = tkinter.Menu(self.window)
+        self.menu_barre = tkinter.Menu(self.window,tearoff = 0)
         #Fichier
-        self.menu_fichier = tkinter.Menu(self.menu_barre)
+        self.menu_fichier = tkinter.Menu(self.menu_barre, tearoff =0 )
         self.menu_barre.add_cascade(label = 'Fichier', underline = 0, menu = self.menu_fichier)
-        self.menu_fichier.add_command(label = 'Export stack', underline = 0, command = self.export)
+        self.menu_fichier.add_command(label = 'Export stack', underline = 0, state=tkinter.DISABLED, command = self.export)
         self.menu_fichier.add_command(label = 'Quitter', underline = 0, command = self.window.quit)
         #Edition
-        self.menu_edition = tkinter.Menu(self.menu_barre)
+        self.menu_edition = tkinter.Menu(self.menu_barre, tearoff =0)
         self.menu_barre.add_cascade(label = 'Edition', underline = 0, menu = self.menu_edition)
         self.menu_edition.add_command(label = 'Copier (CTRL-C)', underline = 13, command = self.copy)
         self.menu_edition.add_command(label = 'Copier Tout', underline = 7, command = self.copy_all)
         self.menu_edition.add_command(label = 'Couper (CTRL-X)', underline = 13, command = self.cut)
         self.menu_edition.add_command(label = 'Coller (CTRL-V)', underline = 13, command = self.paste)
         #Affichage
-        self.menu_affichage = tkinter.Menu(self.menu_barre)
+        self.menu_affichage = tkinter.Menu(self.menu_barre, tearoff =0)
         self.menu_barre.add_cascade(label = 'Affichage', underline = 0, menu = self.menu_affichage)
-        self.menu_affichage.add_command(label = 'todo', command = self.todo)
+        self.v_buttons_visible = tkinter.IntVar()
+        self.v_buttons_visible.set(1)
+        self.menu_affichage.add_checkbutton(label = 'Boutons', underline = 0, variable = self.v_buttons_visible, command = self.toggle_buttons_visible)
+        self.v_zone3_visible = tkinter.IntVar()
+        self.v_zone3_visible.set(1)
+        self.menu_affichage.add_checkbutton(label = 'Options-Résumé', underline = 0, variable = self.v_zone3_visible, command = self.toggle_zone3_visible)
         #Aide
-        self.menu_aide = tkinter.Menu(self.menu_barre)
+        self.menu_aide = tkinter.Menu(self.menu_barre, tearoff =0)
         self.menu_barre.add_cascade(label = 'Aide', underline = 2, menu = self.menu_aide)
         self.menu_aide.add_command(label = 'A propos', underline = 0, command = self.about)
-
-
-
         self.window.config(menu = self.menu_barre)
 
+
+        self.grid_buttons()
+        self.grid_zone3()
+        self.window.columnconfigure(1, minsize = 200, weight = 2)
+
+
+    def grid_buttons(self):
+        if self.v_buttons_visible.get():
+            self.buttons.grid(column = 0, row = 0, rowspan =2, sticky = tkinter.N + tkinter.E + tkinter.W)
+            self.window.columnconfigure(0, minsize = 120, weight = 1)
+        else:
+            self.buttons.grid_forget()
+            self.window.columnconfigure(0, minsize = 0, weight = 1)
+
+    def grid_zone3(self):
+        if self.v_zone3_visible.get():
+            self.zone3.grid(column = 2, row = 0, rowspan =2, sticky = tkinter.N + tkinter.E + tkinter.W)
+            self.window.columnconfigure(2, minsize = 100, weight = 1)
+        else:
+            self.zone3.grid_forget()
+            self.window.columnconfigure(2, minsize = 0, weight = 1)
 
     def key_manager(self, event):
         ''' MAnage the key events
@@ -210,6 +227,17 @@ class Fcalc(object):
             self.v_command_line.set("")
         else:
             self.stack.get()
+    @staticmethod
+    def toogle(v_val):
+        if v_val.get():
+            v_val.set(1)
+        else:
+            v_val.set(0)
 
-    def todo(self):
-        pass
+    def toggle_buttons_visible(self):
+        self.toogle(self.v_buttons_visible)
+        self.grid_buttons()
+
+    def toggle_zone3_visible(self):
+        self.toogle(self.v_zone3_visible)
+        self.grid_zone3()
