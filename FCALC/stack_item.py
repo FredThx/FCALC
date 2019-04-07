@@ -51,7 +51,7 @@ class StackItem(tkinter.Label):
         '''event when cliked left
         '''
         logging.debug("%s is left-clicked : %s"%(self, event))
-        self.stack.put(self.get())
+        self.stack.put_items(self.clone())
 
     def is_clicked3(self, event):
         '''event when cliked right
