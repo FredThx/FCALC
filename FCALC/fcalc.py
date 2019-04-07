@@ -1,6 +1,7 @@
 # coding: utf8
 
 import tkinter as tkinter
+import tkinter.messagebox
 from FCALC.stack import *
 from FCALC.function import *
 from FUTIL.my_logging import *
@@ -10,6 +11,9 @@ from .options import *
 import math
 import clipboard
 from .buttons_frame import *
+from .version import __version__
+import locale
+locale.setlocale(locale.LC_ALL, '')
 
 class Fcalc(object):
     '''Application Calculatrice
@@ -48,14 +52,17 @@ class Fcalc(object):
         # La ligne de commandes
         self.v_command_line = tkinter.StringVar()
         self.t_command_line = tkinter.Entry(self.window, textvariable = self.v_command_line)
-        self.t_command_line.grid(column = 1, row = 2, sticky = tkinter.S + tkinter.E + tkinter.W, padx = 10)
+        self.t_command_line.grid(column = 1, row = 2, sticky = tkinter.S + tkinter.E + tkinter.W, padx = 10, pady = 5)
         self.t_command_line.focus_set()
 
         # key manager
         self.window.bind_all("<Key>", self.key_manager)
         # CTRL-C for copy
         self.window.bind_all("<Control-c>", self.ctrlc)
-
+        # CTRL-V for Paste
+        self.window.bind_all("<Control-v>", self.ctrlv)
+        # CTRL-X for Paste
+        self.window.bind_all("<Control-x>", self.ctrlx)
         # Les fonction
         # fonction de manipulation de stack (pas d'historisation)
         self.bts_stack = Buttonframe(self.buttons, text = "Stack")
@@ -90,6 +97,34 @@ class Fcalc(object):
         self.window.columnconfigure(1, minsize = 200, weight = 2)
         self.window.columnconfigure(2, minsize = 100, weight = 1)
 
+        # Les menus
+        self.menu_barre = tkinter.Menu(self.window)
+        #Fichier
+        self.menu_fichier = tkinter.Menu(self.menu_barre)
+        self.menu_barre.add_cascade(label = 'Fichier', underline = 0, menu = self.menu_fichier)
+        self.menu_fichier.add_command(label = 'Export stack', underline = 0, command = self.export)
+        self.menu_fichier.add_command(label = 'Quitter', underline = 0, command = self.window.quit)
+        #Edition
+        self.menu_edition = tkinter.Menu(self.menu_barre)
+        self.menu_barre.add_cascade(label = 'Edition', underline = 0, menu = self.menu_edition)
+        self.menu_edition.add_command(label = 'Copier (CTRL-C)', underline = 13, command = self.copy)
+        self.menu_edition.add_command(label = 'Copier Tout', underline = 7, command = self.copy_all)
+        self.menu_edition.add_command(label = 'Couper (CTRL-X)', underline = 13, command = self.cut)
+        self.menu_edition.add_command(label = 'Coller (CTRL-V)', underline = 13, command = self.paste)
+        #Affichage
+        self.menu_affichage = tkinter.Menu(self.menu_barre)
+        self.menu_barre.add_cascade(label = 'Affichage', underline = 0, menu = self.menu_affichage)
+        self.menu_affichage.add_command(label = 'todo', command = self.todo)
+        #Aide
+        self.menu_aide = tkinter.Menu(self.menu_barre)
+        self.menu_barre.add_cascade(label = 'Aide', underline = 2, menu = self.menu_aide)
+        self.menu_aide.add_command(label = 'A propos', underline = 0, command = self.about)
+
+
+
+        self.window.config(menu = self.menu_barre)
+
+
     def key_manager(self, event):
         ''' MAnage the key events
         '''
@@ -104,11 +139,21 @@ class Fcalc(object):
         '''Intercept CRTL-C for copy to clipboard
         '''
         logging.debug("CRTL-C")
-        if len(self.v_command_line.get())==0:
-            clipboard.copy(str(self.stack.get_values(1)[0]))
-        else:
-            clipboard.copy(self.v_command_line.get())
+        self.copy()
+        return "break"
 
+    def ctrlv(self, event):
+        '''Intercept CRTL-V for copy to clipboard
+        '''
+        self.paste()
+        self.v_command_line.set("")
+        return "break"
+
+    def ctrlx(self, event):
+        '''Intercept CRTL-V for copy to clipboard
+        '''
+        self.cut()
+        return "break"
 
     def command_line(self):
         '''Return the command line or None
@@ -117,3 +162,54 @@ class Fcalc(object):
             return None
         else:
             return self.v_command_line.get()
+
+    def about(self):
+        tkinter.messagebox.showinfo("A propos de la calculatrice", \
+            "Une calculatrice RPN (Polonaise inverse)\n \
+            Auteur : FredThx\n \
+            Version : %s\n \
+            https://github.com/FredThx/FCALC"%__version__
+                    )
+    def export(self):
+        pass
+
+    def copy(self):
+        '''Copy command_line or last stack_item
+        '''
+        if len(self.v_command_line.get())==0:
+            clipboard.copy(locale.str(self.stack.get_values(1)[0]))
+        else:
+            try:
+                clipboard.copy(locale.str(float(self.v_command_line.get())))
+            except:
+                clipboard.copy(self.v_command_line.get())
+
+    def copy_all(self):
+        '''Copy all the values from the stack with '\n' betwween values
+        '''
+        clipboard.copy("\n".join([locale.str(i) for i in self.stack.get_values()]))
+
+    def paste(self):
+        '''Paste one or more data from the clipboard
+        '''
+        txt = clipboard.paste()
+        #Windows : \r\n Linux-mac : \n
+        txts = [t.replace('\r','') for t in txt.split('\n') if len(t)>0]
+        for t in txts:
+            try:
+                val = locale.atof(t)
+                self.stack.put_values(val)
+            except ValueError:
+                pass
+
+    def cut(self):
+        '''Cut command_line or last stack_item
+        '''
+        self.copy()
+        if len(self.v_command_line.get())>0:
+            self.v_command_line.set("")
+        else:
+            self.stack.get()
+
+    def todo(self):
+        pass
