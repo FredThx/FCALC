@@ -15,17 +15,24 @@ from FUTIL.my_logging import *
 class Stack(VerticalScrolledFrame):
     '''A stack for the calculator
     '''
-    def __init__(self, fcalc, height = None, *args, **kw):
+    def __init__(self, fcalc, height = None, **kw):
         '''Initialisation
             width		:	nb de colonnes (y compris l'index)
             col_names	:	tableau des noms de colonnes
         '''
         self.fcalc = fcalc
-        VerticalScrolledFrame.__init__(self, fcalc.window, height = height, relief = 'groove',borderwidth = 5, *args, **kw)
+        VerticalScrolledFrame.__init__(self, fcalc.window, height = height, relief = 'groove',borderwidth = 5, **kw)
         self.items = []
         item = StackItem(self,0)
         item.grid()
         self.items.append(item)#TODO : remove
+
+    def grid(self, **kwargs):
+        options = { \
+                    'padx' : 5, 'pady' : 5
+                    }
+        options.update(kwargs)
+        super().grid(**options)
 
     def get(self, nb_args=1):
         '''Take nb_args value in the stack

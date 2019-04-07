@@ -1,0 +1,12 @@
+* menus :
+    * About
+    * Edit
+      * cut/copy/paste
+        revoir '.' vs ','
+      * copy all
+    * masque/affiche frames
+      * boutons
+      * Options
+      * Summary
+    * update
+* redimension auto de la stack

@@ -18,12 +18,12 @@ class Summary(tkinter.Frame):
             'Moyenne' : lambda *x : sum(x)/len(x), \
             'Nombre' : lambda *x : len(x)}
 
-    def __init__(self, fcalc, *args, **kw):
+    def __init__(self, fcalc, parent,  *args, **kw):
         '''Initialisation
 
         '''
         self.fcalc = fcalc
-        tkinter.Frame.__init__(self, fcalc.window, relief = 'groove',borderwidth = 2, *args, **kw)
+        tkinter.Frame.__init__(self, parent, relief = 'groove',borderwidth = 2, *args, **kw)
         self.v_type = tkinter.StringVar()
         self.value = tkinter.DoubleVar()
         self.value.set(0)
@@ -32,6 +32,13 @@ class Summary(tkinter.Frame):
             tkinter.Radiobutton(self, variable = self.v_type, text = f, value = f, command = self.update).grid( sticky = 'nw')
         tkinter.Label(self, textvariable  = self.value).grid()
 
+    def grid(self, **kwargs):
+        options = {'sticky' : tkinter.E + tkinter.W, \
+                    'padx' : 5, 'pady' : 5
+                    }
+        options.update(kwargs)
+        super().grid(**options)
+        
     def update(self):
         '''Update the value
         '''

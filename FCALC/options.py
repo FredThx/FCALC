@@ -18,11 +18,11 @@ class Options(tkinter.Frame):
             'detail' : ['off', 'on']
             }
 
-    def __init__(self, fcalc, *args, **kw):
+    def __init__(self, fcalc, parent, *args, **kw):
         '''Initialisation
         '''
         self.fcalc = fcalc
-        tkinter.Frame.__init__(self, fcalc.window, relief = 'groove',borderwidth = 2, *args, **kw)
+        tkinter.Frame.__init__(self, parent, relief = 'groove',borderwidth = 2, *args, **kw)
         self.opts = {}
         for option in Options.options:
             self.opts[option] = tkinter.StringVar()
@@ -32,6 +32,12 @@ class Options(tkinter.Frame):
                 tkinter.Radiobutton(frame, variable = self.opts[option], text = choice, value = choice, command = self.update).grid( sticky = 'nw')
             frame.grid()
 
+    def grid(self, **kwargs):
+        options = {'sticky' : tkinter.E + tkinter.W, \
+                    'padx' : 5, 'pady' : 5
+                    }
+        options.update(kwargs)
+        super().grid(**options)
 
     def update(self):
         '''Update the value
