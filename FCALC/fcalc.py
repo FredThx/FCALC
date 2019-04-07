@@ -2,17 +2,19 @@
 
 import tkinter as tkinter
 import tkinter.messagebox
-from FCALC.stack import *
-from FCALC.function import *
-from FUTIL.my_logging import *
+import logging
+import math
+import locale
+
+from .stack import *
+from .function import *
 from .stack_item import *
 from .summary import *
 from .options import *
-import math
 from . import clipboard
 from .buttons_frame import *
 from .version import __version__
-import locale
+
 locale.setlocale(locale.LC_ALL, '')
 
 class Fcalc(object):
@@ -56,11 +58,11 @@ class Fcalc(object):
         # key manager
         self.window.bind_all("<Key>", self.key_manager)
         # CTRL-C for copy
-        self.window.bind_all("<Control-c>", self.ctrlc)
+        self.window.bind_all("<Control-c>", lambda event : self.copy())
         # CTRL-V for Paste
-        self.window.bind_all("<Control-v>", self.ctrlv)
+        self.window.bind_all("<Control-v>", lambda event : self.paste())
         # CTRL-X for Paste
-        self.window.bind_all("<Control-x>", self.ctrlx)
+        self.window.bind_all("<Control-x>", lambda event : self.cut())
         # Les fonction
         # fonction de manipulation de stack (pas d'historisation)
         self.bts_stack = Buttonframe(self.buttons, text = "Stack")
@@ -152,25 +154,8 @@ class Fcalc(object):
                 self.v_command_line.set(self.command_line()[0:-1])
             f._function()
 
-    def ctrlc(self, event):
-        '''Intercept CRTL-C for copy to clipboard
-        '''
-        logging.debug("CRTL-C")
-        self.copy()
-        return "break"
-
-    def ctrlv(self, event):
-        '''Intercept CRTL-V for copy to clipboard
-        '''
-        self.paste()
-        self.v_command_line.set("")
-        return "break"
-
-    def ctrlx(self, event):
-        '''Intercept CRTL-V for copy to clipboard
-        '''
-        self.cut()
-        return "break"
+    def ctrlz(self, event):
+        pass
 
     def command_line(self):
         '''Return the command line or None
@@ -218,6 +203,7 @@ class Fcalc(object):
                 self.stack.put_values(val)
             except ValueError:
                 pass
+        self.v_command_line.set("")
 
     def cut(self):
         '''Cut command_line or last stack_item
@@ -227,17 +213,16 @@ class Fcalc(object):
             self.v_command_line.set("")
         else:
             self.stack.get()
+
     @staticmethod
     def toogle(v_val):
         if v_val.get():
             v_val.set(1)
         else:
             v_val.set(0)
-
     def toggle_buttons_visible(self):
         self.toogle(self.v_buttons_visible)
         self.grid_buttons()
-
     def toggle_zone3_visible(self):
         self.toogle(self.v_zone3_visible)
         self.grid_zone3()

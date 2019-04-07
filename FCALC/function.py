@@ -7,10 +7,12 @@ Une fonction de la calculatrice
     - raccourcis clavier
 '''
 import tkinter as tkinter
-from FCALC.fcalc_error import *
-from FUTIL.my_logging import *
-from .stack_item import *
+import logging
 import math
+
+from .fcalc_error import *
+from .stack_item import *
+from .infobulle import *
 
 class Function(object):
     ''' A Fcal function
@@ -27,15 +29,16 @@ class Function(object):
         self.name = bt_text or key or "undefined"
         self.is_return = is_return
         self.delete1car = delete1car
-        if bt_text:
-            self.button = tkinter.Button(parent, text = bt_text, command = self._function)
-            self.button.grid() #TODO : options
-
         if key:
             if not type(key)==list:
                 key = [key]
             for k in key:
                 fcalc.keys[k]=self
+        if bt_text:
+            self.button = tkinter.Button(parent, text = bt_text, command = self._function)
+            self.button.grid() #TODO : options
+            if key:
+                self.infobulle = InfoBulle(parent=self.button,texte="Raccourcis : %s"%key[0])
 
     def _function(self):
         '''The function called by the ui
@@ -98,8 +101,6 @@ class Function_angle_out(Function):
                 self.fcalc.stack.put_items(StackItem(self.fcalc.stack, value, self, args))
             else:
                 self.fcalc.stack.put_items(StackItem(self.fcalc.stack, math.degrees(value), self, args))
-
-
 
 class Function_angle_in(Function):
     '''Function qui prend des angles (soit deg, soit rad)

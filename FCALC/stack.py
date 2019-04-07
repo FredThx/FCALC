@@ -6,11 +6,12 @@ Un Frame tkinter
 Usage :
 '''
 import tkinter as tkinter
+import logging
 
 from .scrframe import *
 from .stack_item import *
 from .fcalc_error import *
-from FUTIL.my_logging import *
+
 
 class Stack(VerticalScrolledFrame):
     '''A stack for the calculator

@@ -6,7 +6,7 @@ Un Label tkinter
 Usage :
 '''
 import tkinter as tkinter
-from FUTIL.my_logging import *
+import logging
 
 class StackItem(tkinter.Label):
     '''Un item de la stack
