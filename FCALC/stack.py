@@ -22,11 +22,11 @@ class Stack(VerticalScrolledFrame):
             col_names	:	tableau des noms de colonnes
         '''
         self.fcalc = fcalc
-        VerticalScrolledFrame.__init__(self, fcalc.window, height = height, relief = 'groove',borderwidth = 5, **kw)
+        VerticalScrolledFrame.__init__(self, fcalc.window, height = height, min_width = 200, relief = 'groove',borderwidth = 5, **kw)
         self.items = []
-        item = StackItem(self,0)
-        item.grid()
-        self.items.append(item)#TODO : remove
+        #item = StackItem(self,'')
+        #item.grid()
+        #self.items.append(item)#TODO : remove
 
     def grid(self, **kwargs):
         options = { \
@@ -96,4 +96,7 @@ class Stack(VerticalScrolledFrame):
     def is_updated(self):
         '''Execute when the stack updated
         '''
-        self.fcalc.summary.update()
+        try:
+            self.fcalc.summary.update()
+        except:
+            pass

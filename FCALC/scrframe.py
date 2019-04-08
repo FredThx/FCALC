@@ -4,6 +4,9 @@
 # Thanks : https://gist.github.com/EugeneBakin
 # http://tkinter.unpythonic.net/wiki/VerticalScrolledFrame
 
+#Bricolé pour que l'intérior se remplisse du bas en haut.
+#TODO : rendre ce fonctionnement paramétrable.
+
 try:
 	import tkinter
 except:
@@ -19,14 +22,15 @@ class VerticalScrolledFrame(tkinter.Frame):
 	* Construct and pack/place/grid normally
 	* This frame only allows vertical scrolling
 	"""
-	def __init__(self, parent, height = None, *args, **kw):
+	def __init__(self, parent, height = None, min_width = 0, *args, **kw):
 		tkinter.Frame.__init__(self, parent, *args, **kw)
 
+		self.min_width = min_width
 		# create a canvas object and a vertical scrollbar for scrolling it
 		vscrollbar = tkinter.Scrollbar(self, orient=tkinter.VERTICAL)
 		vscrollbar.pack(fill=tkinter.Y, side=tkinter.RIGHT, expand=tkinter.TRUE)
 		canvas = tkinter.Canvas(self, bd=0, highlightthickness=0,
-						yscrollcommand=vscrollbar.set, height = height)
+						yscrollcommand=vscrollbar.set, height = height, width = min_width)
 		canvas.pack(side=tkinter.LEFT, fill=tkinter.BOTH, expand=tkinter.TRUE)
 		vscrollbar.config(command=canvas.yview)
 
@@ -45,9 +49,10 @@ class VerticalScrolledFrame(tkinter.Frame):
 			# update the scrollbars to match the size of the inner frame
 			size = (interior.winfo_reqwidth(), interior.winfo_reqheight())
 			canvas.config(scrollregion="0 0 %s %s" % size)
+			canvas.yview_moveto(interior.winfo_reqheight() - canvas.winfo_reqheight())
 			if interior.winfo_reqwidth() != canvas.winfo_width():
 				# update the canvas's width to fit the inner frame
-				canvas.config(width=interior.winfo_reqwidth())
+				canvas.config(width=max(self.min_width, interior.winfo_reqwidth()))
 		interior.bind('<Configure>', _configure_interior)
 
 		def _configure_canvas(event):

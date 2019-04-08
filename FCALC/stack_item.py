@@ -23,7 +23,7 @@ class StackItem(tkinter.Label):
         self.args = args
         self.stack = stack
         self.v_text.set(str(self))
-        tkinter.Label.__init__(self, stack.interior, textvariable = self.v_text, width = 30, anchor = 'sw',justify = 'right')
+        tkinter.Label.__init__(self, stack.interior, textvariable = self.v_text, width = 25, anchor = 'sw',justify = 'right')
         self.bind('<Button-1>', self.is_clicked1)
         self.bind('<Button-3>', self.is_clicked3)
 
