@@ -7,3 +7,18 @@
 * undo suite delete
 * drag and drop item_stack
 * zone de log
+* Format de nombre
+  - liée à stack_item
+  - fonction qui imposent le Format
+    - Aug : %
+    - Asin/Acos/Atan : ° ou Rad
+  - saisie possible en ligne de commandes
+    - 45%
+    - 18°
+    - 01:18 pour 01:18
+  - click droit => change
+  - fonction qui changent ou pas le format
+    - 1 + 1% = 101%
+    - 1 + 0:18 = 1:18
+    - 1 / 1% = 100
+    - 1:00 / 0:50 = 1.2

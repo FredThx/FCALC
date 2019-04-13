@@ -92,6 +92,10 @@ class Fcalc(object):
         Function_angle_in(self, self.bts_trig, lambda x : math.tan(x) , nb_args = 1 ,bt_text = "TAN")
         Function_angle_out(self, self.bts_trig, lambda x : math.atan(x) , nb_args = 1 ,bt_text = "ATAN")
         Function_angle_out(self, self.bts_trig, lambda x : math.atan2(x) , nb_args = 2 ,bt_text = "ATAN2")
+        #Fonctions usuelles
+        self.bts_commons = Buttonframe(self.buttons, text = "Usuelles")
+        self.bts_commons.grid(row = 3)
+        Function(self, self.bts_commons, lambda x,y : (y-x)/y  , nb_args = 2 ,bt_text = "Aug%", key = ["A","a"], label = "x,y : (y-x)/y")
 
         # Les menus
         self.menu_barre = tkinter.Menu(self.window,tearoff = 0)
