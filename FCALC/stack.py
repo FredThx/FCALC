@@ -56,6 +56,15 @@ class Stack(VerticalScrolledFrame):
         '''
         return self.get(len(self.items))
 
+    def del_item(self, item):
+        '''remove an item
+        item        :   item object
+        '''
+        self.items.remove(item)
+        item.destroy()
+        self.is_updated()
+
+
     def put_values(self, values):
         ''' Put value or (value1, value2, ...) in the stack
             - values            :   value or (value1, value2, ...)

@@ -57,8 +57,7 @@ class StackItem(tkinter.Label):
         '''event when cliked right
         '''
         logging.debug("%s is right-clicked : %s"%(self, event))
-        self.stack.items.remove(self)
-        self.destroy()
+        self.stack.del_item(self)
 
     def clone(self):
         new_item = StackItem(self.stack, self.value, self.function, self.args)
