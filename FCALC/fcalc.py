@@ -5,6 +5,7 @@ import tkinter.messagebox
 import logging
 import math
 import locale
+import webbrowser
 
 from .stack import *
 from .function import *
@@ -20,9 +21,10 @@ locale.setlocale(locale.LC_ALL, '')
 class Fcalc(object):
     '''Application Calculatrice
     '''
-    def __init__(self, title = "Calculatrice"):
+    def __init__(self, title = "Calculatrice", url_help = None):
         self.window = tkinter.Tk()
         self.title = title
+        self.url_help = url_help
         self.keys = {}
         self.init_ui()
 
@@ -122,10 +124,10 @@ class Fcalc(object):
         self.menu_affichage.add_checkbutton(label = 'Options-Résumé', underline = 0, variable = self.v_zone3_visible, command = self.toggle_zone3_visible)
         #Aide
         self.menu_aide = tkinter.Menu(self.menu_barre, tearoff =0)
-        self.menu_barre.add_cascade(label = 'Aide', underline = 2, menu = self.menu_aide)
+        self.menu_barre.add_cascade(label = 'Aide', underline = 1, menu = self.menu_aide)
         self.menu_aide.add_command(label = 'A propos', underline = 0, command = self.about)
+        self.menu_aide.add_command(label = 'Aide', underline = 1, command = self.help)
         self.window.config(menu = self.menu_barre)
-
 
         self.grid_buttons()
         self.grid_zone3()
@@ -169,13 +171,19 @@ class Fcalc(object):
         else:
             return self.v_command_line.get()
 
-    def about(self):
+    @staticmethod
+    def about():
         tkinter.messagebox.showinfo("A propos de la calculatrice", \
             "Une calculatrice RPN (Polonaise inverse)\n \
             Auteur : FredThx\n \
             Version : %s\n \
-            https://github.com/FredThx/FCALC"%__version__
+            https://github.com/FredThx/FCALC"%__version__, \
+            icon = 'info'
                     )
+    def help(self):
+        if self.url_help:
+            webbrowser.open_new(self.url_help)
+
     def export(self):
         pass
 
