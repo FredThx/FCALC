@@ -26,7 +26,7 @@ class Stack(VerticalScrolledFrame):
         self.items = []
         self.fictive_items = []
         self.bt_trash = tkinter.Button(self, text = "UNDELETE", command = self.undelete, state = 'disabled' )
-        self.bt_trash.pack()
+        self.bt_trash.pack()#side = tkinter.LEFT)
 
 
     def grid(self, **kwargs):

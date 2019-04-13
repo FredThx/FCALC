@@ -57,6 +57,7 @@ class Fcalc(object):
         self.t_command_line.grid(column = 1, row = 2, sticky = tkinter.S + tkinter.E + tkinter.W, padx = 10, pady = 5)
         self.t_command_line.focus_set()
 
+
         # key manager
         self.window.bind_all("<Key>", self.key_manager)
         # CTRL-C for copy
