@@ -24,9 +24,10 @@ class Stack(VerticalScrolledFrame):
         self.fcalc = fcalc
         VerticalScrolledFrame.__init__(self, fcalc.window, height = height, min_width = 200, relief = 'groove',borderwidth = 5, **kw)
         self.items = []
-        #item = StackItem(self,'')
-        #item.grid()
-        #self.items.append(item)#TODO : remove
+        self.fictive_items = []
+        self.bt_trash = tkinter.Button(self, text = "UNDELETE", command = self.undelete, state = 'disabled' )
+        self.bt_trash.pack()
+
 
     def grid(self, **kwargs):
         options = { \
@@ -109,3 +110,25 @@ class Stack(VerticalScrolledFrame):
             self.fcalc.summary.update()
         except:
             pass
+
+    def put_fictive_items(self, *items):
+        '''Put the item in a fictive stack (non visible, juste for undelete)
+        '''
+        if type(items)!=tuple:
+            items = [items]
+        for item in items:
+            self.fictive_items.append(item)
+        self.bt_trash.config(state='normal')
+
+    def get_fictive_item(self):
+        ''' Get a item in the fictive stack and remove it from the fictive_items list
+        '''
+        return self.fictive_items.pop()
+
+    def undelete(self):
+        ''' Move a item from the fictive_items list to the stack and undo it.
+        '''
+        item = self.get_fictive_item()
+        self.put_items(*item.undo())
+        if len(self.fictive_items)==0:
+            self.bt_trash.config(state='disabled')

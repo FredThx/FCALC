@@ -71,4 +71,7 @@ class StackItem(tkinter.Label):
     def undo(self):
         ''' Return the args of the function
         '''
-        return self.args
+        if self.function:
+            return self.args
+        else:
+            return self

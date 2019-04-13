@@ -87,8 +87,13 @@ class Function_stack(Function):
         items = self.function(*args)
         if type(items)!=tuple:
             items = [items]
-        for item in items:
-            self.fcalc.stack.put_items(item)
+        if len(items)>0:
+            for item in items:
+                self.fcalc.stack.put_items(item)
+        else:
+            #Dans le cas où rien n'est retourné (ie suppression), on va remplit une stack fictiv
+            item = StackItem(self.fcalc.stack, None, self, args)
+            self.fcalc.stack.put_fictive_items(item)
 
 class Function_angle_out(Function):
     '''Function qui renvoie un angle (soit deg, soit rad)
