@@ -26,6 +26,10 @@ class StackItem(tkinter.Label):
         tkinter.Label.__init__(self, stack.interior, textvariable = self.v_text, width = 25, anchor = 'sw',justify = 'right')
         self.bind('<Double-Button-1>', self.is_clicked1)
         self.bind('<Double-Button-3>', self.is_clicked3)
+        self.bind("<ButtonPress-1>", self.on_drag_start)
+        self.bind("<B1-Motion>", self.on_drag)
+        self.bind("<ButtonRelease-1>", self.on_drop)
+        self.configure(cursor = "hand1")
 
 
     def get(self):
@@ -75,3 +79,23 @@ class StackItem(tkinter.Label):
             return self.args
         else:
             return self
+    #DRAG and DROP methods
+    def on_drag_start(self, event):
+        self.config(background  = '#FFFFCC')
+        logging.debug("Drag start for %s"%self)
+
+    def on_drag(self, event):
+        x,y = event.widget.winfo_pointerxy()
+        target = event.widget.winfo_containing(x,y)
+        if isinstance(target, StackItem) and target is not self:
+            logging.debug("Move %s to %s"%(self, target))
+            my_row = self.grid_info()['row']
+            target_row = target.grid_info()['row']
+            self.grid(row = target_row)
+            target.grid(row = my_row)
+            self.stack.move(self, target_row)
+
+
+    def on_drop(self, event):
+        logging.debug("Dropfor %s event : %s"%(self,event))
+        self.config(background  = 'SystemButtonFace')

@@ -132,3 +132,9 @@ class Stack(VerticalScrolledFrame):
         self.put_items(*item.undo())
         if len(self.fictive_items)==0:
             self.bt_trash.config(state='disabled')
+
+    def move(self, item, position):
+        '''Move a item to position in the items list
+        '''
+        actual_position = self.items.index(item)
+        self.items.insert(position, self.items.pop(actual_position))
