@@ -5,14 +5,15 @@ import tkinter.messagebox
 import logging
 import math
 import locale
+
 import webbrowser
 
+from . import clipboard
 from .stack import *
 from .function import *
 from .stack_item import *
 from .summary import *
 from .options import *
-from . import clipboard
 from .buttons_frame import *
 from .version import __version__
 
@@ -96,9 +97,9 @@ class Fcalc(object):
         Function_angle_out(self, self.bts_trig, lambda x : math.atan(x) , nb_args = 1 ,bt_text = "ATAN")
         Function_angle_out(self, self.bts_trig, lambda x : math.atan2(x) , nb_args = 2 ,bt_text = "ATAN2")
         #Fonctions usuelles
-        self.bts_commons = Buttonframe(self.buttons, text = "Usuelles")
-        self.bts_commons.grid(row = 3)
-        Function(self, self.bts_commons, lambda x,y : (y-x)/y  , nb_args = 2 ,bt_text = "Aug%", key = ["A","a"], label = "x,y : (y-x)/y")
+        #self.bts_commons = Buttonframe(self.buttons, text = "Usuelles")
+        #self.bts_commons.grid(row = 3)
+        Function(self, self.bts_basic, lambda x,y : (y-x)/y  , nb_args = 2 ,bt_text = "Aug%", key = ["A","a"], label = "x,y : (y-x)/y")
 
         # Les menus
         self.menu_barre = tkinter.Menu(self.window,tearoff = 0)
@@ -157,7 +158,7 @@ class Fcalc(object):
         logging.debug("Key pressed : '%s'"%event.keysym)
         if event.keysym in self.keys:
             f = self.keys[event.keysym]
-            if f.delete1car:
+            if f.delete1car: #TODO : bug quand CTRL-
                 self.v_command_line.set(self.command_line()[0:-1])
             f._function()
 
@@ -192,7 +193,7 @@ class Fcalc(object):
         '''Copy command_line or last stack_item
         '''
         if len(self.v_command_line.get())==0:
-            clipboard.copy(locale.str(self.stack.get_values(1)[0]))
+            self.stack.copy_to_clipboard()
         else:
             try:
                 clipboard.copy(locale.str(float(self.v_command_line.get())))

@@ -24,12 +24,22 @@ class StackItem(tkinter.Label):
         self.stack = stack
         self.v_text.set(str(self))
         tkinter.Label.__init__(self, stack.interior, textvariable = self.v_text, width = 25, anchor = 'sw',justify = 'right')
-        self.bind('<Double-Button-1>', self.is_clicked1)
-        self.bind('<Double-Button-3>', self.is_clicked3)
+        #Menu contextuel
+        self.aMenu = tkinter.Menu(self, tearoff = 0)
+        self.aMenu.add_command(label = 'Drop', command = self.delete)
+        self.aMenu.add_command(label = 'Dup', command = self.duplicate)
+        self.aMenu.add_command(label = 'Copy', command = lambda: self.stack.copy_to_clipboard(self))
+        self.aMenu.add_command(label = 'Cut', command = lambda: self.stack.cut_to_clipboard(self))
+
+        #Evenements
+        self.bind('<Double-Button-1>', lambda event : self.duplicate())
+        self.bind('<Double-Button-3>', lambda event : self.delete())
+        self.bind('<Button-3>', self.popup_menu)
         self.bind("<ButtonPress-1>", self.on_drag_start)
         self.bind("<B1-Motion>", self.on_drag)
         self.bind("<ButtonRelease-1>", self.on_drop)
         self.configure(cursor = "hand1")
+
 
 
     def get(self):
@@ -51,17 +61,15 @@ class StackItem(tkinter.Label):
         logging.debug("Modif uniquement value, pas function!!")
         self.value = value
 
-    def is_clicked1(self, event):
-        '''event when cliked left
+    def duplicate(self):
+        '''Copy the item to the last position in the stack
         '''
-        logging.debug("%s is left-clicked : %s"%(self, event))
         self.stack.put_items(self.clone())
 
-    def is_clicked3(self, event):
-        '''event when cliked right
+    def delete(self):
+        '''Delete the item from the stack
         '''
-        logging.debug("%s is right-clicked : %s"%(self, event))
-        self.stack.del_item(self)
+        self.stack.del_items(self)
 
     def clone(self):
         new_item = StackItem(self.stack, self.value, self.function, self.args)
@@ -78,7 +86,7 @@ class StackItem(tkinter.Label):
         if self.function:
             return self.args
         else:
-            return self
+            return (self,)
     #DRAG and DROP methods
     def on_drag_start(self, event):
         self.config(background  = '#FFFFCC')
@@ -99,3 +107,8 @@ class StackItem(tkinter.Label):
     def on_drop(self, event):
         logging.debug("Dropfor %s event : %s"%(self,event))
         self.config(background  = 'SystemButtonFace')
+
+    def popup_menu(self, event):
+        '''Show the context menu
+        '''
+        self.aMenu.post(event.x_root, event.y_root)

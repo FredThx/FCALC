@@ -7,10 +7,12 @@ Usage :
 '''
 import tkinter as tkinter
 import logging
+import locale
 
 from .scrframe import *
 from .stack_item import *
 from .fcalc_error import *
+from . import clipboard
 
 
 class Stack(VerticalScrolledFrame):
@@ -27,6 +29,12 @@ class Stack(VerticalScrolledFrame):
         self.fictive_items = []
         self.bt_trash = tkinter.Button(self, text = "UNDELETE", command = self.undelete, state = 'disabled' )
         self.bt_trash.pack()#side = tkinter.LEFT)
+        #Menu contextuele
+        self.aMenu = tkinter.Menu(self, tearoff = 0)
+        self.aMenu.add_command(label = 'Vider', command = lambda:self.del_items('ALL'))
+        self.aMenu.add_command(label = 'Vider historique', command = self.clean_fictive_items)
+        self.aMenu.add_command(label = 'Copier tout', command = self.fcalc.copy_all)
+        self.bind('<Button-3>', self.popup_menu)
 
 
     def grid(self, **kwargs):
@@ -57,12 +65,18 @@ class Stack(VerticalScrolledFrame):
         '''
         return self.get(len(self.items))
 
-    def del_item(self, item):
-        '''remove an item
-        item        :   item object
+    def del_items(self, *items):
+        '''remove items from stack
+        and copy tem in the fictive_items list
+        *item        :   item object
+        if the first item = 'ALL' ...
         '''
-        self.items.remove(item)
-        item.destroy()
+        if len(items)>0 and items[0] == 'ALL':
+            items = self.items.copy()
+        for item in items:
+            self.items.remove(item)
+            item.grid_forget()
+            self.put_fictive_items(item)
         self.is_updated()
 
 
@@ -126,15 +140,36 @@ class Stack(VerticalScrolledFrame):
         return self.fictive_items.pop()
 
     def undelete(self):
-        ''' Move a item from the fictive_items list to the stack and undo it.
+        ''' Move the last item from the fictive_items list to the stack and undo it.
         '''
         item = self.get_fictive_item()
         self.put_items(*item.undo())
         if len(self.fictive_items)==0:
             self.bt_trash.config(state='disabled')
 
+    def clean_fictive_items(self):
+        '''remove all fictives_items
+        '''
+        while len(self.fictive_items)>0:
+            item = self.fictive_items.pop()
+            item.destroy()
+        self.bt_trash.config(state='disabled')
+
     def move(self, item, position):
         '''Move a item to position in the items list
         '''
         actual_position = self.items.index(item)
         self.items.insert(position, self.items.pop(actual_position))
+
+    def popup_menu(self, event):
+        '''Show the context menu
+        '''
+        self.aMenu.post(event.x_root, event.y_root)
+
+    def copy_to_clipboard(self, item = None):
+        '''Copy the value of the item to clipboard
+        if item is None, the last one is used
+        '''
+        if not item:
+            item = self.get_values(1)[0]
+        clipboard.copy(locale.str(item.get()))
