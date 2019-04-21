@@ -24,6 +24,7 @@ class StackItem(tkinter.Label):
         self.stack = stack
         self.v_text.set(str(self))
         tkinter.Label.__init__(self, stack.interior, textvariable = self.v_text, width = 25, anchor = 'sw',justify = 'right')
+        self.set_font()
         #Menu contextuel
         self.aMenu = tkinter.Menu(self, tearoff = 0)
         self.aMenu.add_command(label = 'Drop', command = self.delete)
@@ -43,7 +44,12 @@ class StackItem(tkinter.Label):
         self.bind("<ButtonRelease-1>", self.on_drop)
         self.configure(cursor = "hand1")
 
-
+    def grid(self, **kwargs):
+        options = { \
+                    'sticky' : 'nw'
+                    }
+        options.update(kwargs)
+        super().grid(**options)
 
     def get(self):
         '''Return the value
@@ -122,3 +128,12 @@ class StackItem(tkinter.Label):
         '''Show the context menu
         '''
         self.aMenu.post(event.x_root, event.y_root)
+
+    def set_font(self):
+        if self.function:
+            font=('Helvetica', self.stack.fcalc.v_font.get(), 'bold')
+        else:
+            font=('Helvetica', self.stack.fcalc.v_font.get())
+        self.configure(font = font)
+        for item in self.args:
+            item.set_font()

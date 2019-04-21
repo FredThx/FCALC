@@ -173,3 +173,11 @@ class Stack(VerticalScrolledFrame):
         if not item:
             item = self.get_values(1)[0]
         clipboard.copy(locale.str(item.get()))
+
+    def set_font(self):
+        '''Change the font of all items
+        '''
+        for item in self.items:
+            item.set_font()
+        for item in self.fictive_items:
+            item.set_font()

@@ -129,6 +129,12 @@ class Fcalc(object):
         self.v_keypad_visible = tkinter.IntVar()
         self.v_keypad_visible.set(0)
         self.menu_affichage.add_checkbutton(label = 'Keypad', underline = 0, variable = self.v_keypad_visible, command = self.toggle_keypad_visible)
+        self.menu_font = tkinter.Menu(self.menu_affichage, tearoff = 0)
+        self.menu_affichage.add_cascade(label = "Font", menu = self.menu_font)
+        self.v_font = tkinter.IntVar()
+        self.v_font.set(12)
+        for font in [12,14,16,18,24]:
+            self.menu_font.add_radiobutton(label = str(font), variable = self.v_font, command = self.change_font)
 
         #Aide
         self.menu_aide = tkinter.Menu(self.menu_barre, tearoff =0)
@@ -268,3 +274,8 @@ class Fcalc(object):
     def toggle_keypad_visible(self):
         self.toogle(self.v_keypad_visible)
         self.grid_keypad()
+
+    def change_font(self):
+        '''When font change....
+        '''
+        self.stack.set_font()
