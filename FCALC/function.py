@@ -39,7 +39,7 @@ class Function(object):
             for k in key:
                 fcalc.keys[k]=self
         if bt_text:
-            self.button = tkinter.Button(parent, text = bt_text, command = self._function)
+            self.button = tkinter.Button(parent, text = bt_text, command = self._function, width = 5)
             self.button.grid() #TODO : options
             self.infobulle = InfoBulle(parent=self.button,texte=label)
 

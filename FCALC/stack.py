@@ -27,7 +27,7 @@ class Stack(VerticalScrolledFrame):
         VerticalScrolledFrame.__init__(self, fcalc.window, height = height, min_width = 200, relief = 'groove',borderwidth = 5, **kw)
         self.items = []
         self.fictive_items = []
-        self.bt_trash = tkinter.Button(self, text = "UNDELETE", command = self.undelete, state = 'disabled' )
+        self.bt_trash = tkinter.Button(self, text = "UNDELETE", command = self.undelete, state = 'disabled',wraplength = 1 )
         self.bt_trash.pack()#side = tkinter.LEFT)
         #Menu contextuele
         self.aMenu = tkinter.Menu(self, tearoff = 0)

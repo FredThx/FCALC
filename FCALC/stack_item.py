@@ -28,6 +28,9 @@ class StackItem(tkinter.Label):
         self.aMenu = tkinter.Menu(self, tearoff = 0)
         self.aMenu.add_command(label = 'Drop', command = self.delete)
         self.aMenu.add_command(label = 'Dup', command = self.duplicate)
+        self.aMenu.add_command(label = 'Undo', command = self.do_undo)
+        if self.function is None:
+            self.aMenu.entryconfigure(2, state=tkinter.DISABLED)
         self.aMenu.add_command(label = 'Copy', command = lambda: self.stack.copy_to_clipboard(self))
         self.aMenu.add_command(label = 'Cut', command = lambda: self.stack.cut_to_clipboard(self))
 
@@ -79,6 +82,13 @@ class StackItem(tkinter.Label):
         '''Update the label
         '''
         self.v_text.set(str(self))
+
+    def do_undo(self):
+        '''Make undo command on the item
+        insert his args in the stack_item and delete itself
+        '''
+        self.stack.put_items(* self.undo())
+        self.delete()
 
     def undo(self):
         ''' Return the args of the function

@@ -15,6 +15,7 @@ from .stack_item import *
 from .summary import *
 from .options import *
 from .buttons_frame import *
+from .keypad import *
 from .version import __version__
 
 locale.setlocale(locale.LC_ALL, '')
@@ -57,7 +58,8 @@ class Fcalc(object):
         self.t_command_line = tkinter.Entry(self.window, textvariable = self.v_command_line)
         self.t_command_line.grid(column = 1, row = 2, sticky = tkinter.S + tkinter.E + tkinter.W, padx = 10, pady = 5)
         self.t_command_line.focus_set()
-
+        # Le Pavé numérique
+        self.keypad = Keypad(self.window, self.do_keypad_event)
 
         # key manager
         self.window.bind_all("<Key>", self.key_manager)
@@ -80,10 +82,10 @@ class Fcalc(object):
         #Opérations basiques
         self.bts_basic = Buttonframe(self.buttons, text = "Basics")
         self.bts_basic.grid(row = 2)
-        Function(self, self.bts_basic, lambda x,y : x+y , nb_args = 2 ,bt_text = "+", key = ["plus","KP_Add"])
-        Function(self, self.bts_basic, lambda x,y : x-y  , nb_args = 2 ,bt_text = "-", key = ["minus","KP_Subtract"])
-        Function(self, self.bts_basic, lambda x,y : x*y  , nb_args = 2 ,bt_text = "*", key = ["asterisk","KP_Multiply"])
-        Function(self, self.bts_basic, lambda x,y : x/y  , nb_args = 2 ,bt_text = "/", key = ["slash","KP_Divide"])
+        Function(self, self.bts_basic, lambda x,y : x+y , nb_args = 2 ,key = ["plus","KP_Add"])
+        Function(self, self.bts_basic, lambda x,y : x-y  , nb_args = 2 , key = ["minus","KP_Subtract"])
+        Function(self, self.bts_basic, lambda x,y : x*y  , nb_args = 2 , key = ["asterisk","KP_Multiply"])
+        Function(self, self.bts_basic, lambda x,y : x/y  , nb_args = 2 , key = ["slash","KP_Divide"])
         Function(self, self.bts_basic, lambda x : 1/x  , nb_args = 1 ,bt_text = "1/x", key = ["i","I"])
         #Fonction Trigo #TODO : gestion DEG-RAD
         self.bts_trig = Buttonframe(self.buttons, text = "Trigo")
@@ -119,11 +121,15 @@ class Fcalc(object):
         self.menu_affichage = tkinter.Menu(self.menu_barre, tearoff =0)
         self.menu_barre.add_cascade(label = 'Affichage', underline = 0, menu = self.menu_affichage)
         self.v_buttons_visible = tkinter.IntVar()
-        self.v_buttons_visible.set(1)
+        self.v_buttons_visible.set(0)
         self.menu_affichage.add_checkbutton(label = 'Boutons', underline = 0, variable = self.v_buttons_visible, command = self.toggle_buttons_visible)
         self.v_zone3_visible = tkinter.IntVar()
-        self.v_zone3_visible.set(1)
+        self.v_zone3_visible.set(0)
         self.menu_affichage.add_checkbutton(label = 'Options-Résumé', underline = 0, variable = self.v_zone3_visible, command = self.toggle_zone3_visible)
+        self.v_keypad_visible = tkinter.IntVar()
+        self.v_keypad_visible.set(0)
+        self.menu_affichage.add_checkbutton(label = 'Keypad', underline = 0, variable = self.v_keypad_visible, command = self.toggle_keypad_visible)
+
         #Aide
         self.menu_aide = tkinter.Menu(self.menu_barre, tearoff =0)
         self.menu_barre.add_cascade(label = 'Aide', underline = 1, menu = self.menu_aide)
@@ -133,6 +139,7 @@ class Fcalc(object):
 
         self.grid_buttons()
         self.grid_zone3()
+        self.grid_keypad()
         self.window.columnconfigure(1, minsize = 200, weight = 2)
 
 
@@ -151,6 +158,11 @@ class Fcalc(object):
         else:
             self.zone3.grid_forget()
             self.window.columnconfigure(2, minsize = 0, weight = 1)
+    def grid_keypad(self):
+        if self.v_keypad_visible.get():
+            self.keypad.grid(column = 1, row = 3)
+        else:
+            self.keypad.grid_forget()
 
     def key_manager(self, event):
         ''' MAnage the key events
@@ -161,6 +173,19 @@ class Fcalc(object):
             if f.delete1car: #TODO : bug quand CTRL-
                 self.v_command_line.set(self.command_line()[0:-1])
             f._function()
+
+    def do_keypad_event(self, txt):
+        '''Do the ...
+        '''
+        logging.debug("Keypad %s pressed"%txt)
+        if txt in self.keys:
+            f = self.keys[txt]
+            f._function()
+        elif txt in [str(i) for i in range(10)]:
+            self.v_command_line.set(self.v_command_line.get()+txt)
+        elif txt == 'period':
+            self.v_command_line.set(self.v_command_line.get()+'.')
+        self.t_command_line.icursor(len(self.v_command_line.get()))
 
     def ctrlz(self, event):
         pass
@@ -240,3 +265,6 @@ class Fcalc(object):
     def toggle_zone3_visible(self):
         self.toogle(self.v_zone3_visible)
         self.grid_zone3()
+    def toggle_keypad_visible(self):
+        self.toogle(self.v_keypad_visible)
+        self.grid_keypad()

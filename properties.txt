@@ -15,7 +15,7 @@ VSVersionInfo(
       StringTable(
         u'040904B0',
         [StringStruct(u'CompanyName', u'FredThx'),
-        StringStruct(u'FileDescription', u'A RPN Calculator.'),
+        StringStruct(u'FileDescription', u'A RPN Calculator by FredThx.'),
         StringStruct(u'FileVersion', __version__),
         StringStruct(u'InternalName', u'Fcalc'),
         StringStruct(u'LegalCopyright', u'CeCILL FREE SOFTWARE LICENSE'),
