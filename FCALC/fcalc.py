@@ -69,6 +69,7 @@ class Fcalc(object):
         self.keypad = Keypad(self.zone2, self.do_keypad_event)
 
         #PARAMETRES
+        #Set default params
         self.v_auto_save_config = tkinter.IntVar()
         self.v_auto_save_config.set(1)
         self.v_auto_save_data = tkinter.IntVar()
@@ -81,6 +82,7 @@ class Fcalc(object):
         self.v_keypad_visible.set(0)
         self.v_font = tkinter.IntVar()
         self.v_font.set(12)
+        #Load a json file with last params
         self.load()
 
         # key manager
@@ -91,6 +93,7 @@ class Fcalc(object):
         self.window.bind_all("<Control-v>", lambda event : self.paste())
         # CTRL-X for Paste
         self.window.bind_all("<Control-x>", lambda event : self.cut())
+
         # Les fonction
         # fonction de manipulation de stack (pas d'historisation)
         self.bts_stack = Buttonframe(self.buttons, text = "Stack")
@@ -123,7 +126,7 @@ class Fcalc(object):
         #Fonctions usuelles
         #self.bts_commons = Buttonframe(self.buttons, text = "Usuelles")
         #self.bts_commons.grid(row = 3)
-        Function(self, self.bts_basic, lambda x,y : (y-x)/y  , nb_args = 2 ,bt_text = "Aug%", key = ["A","a"], label = "x,y : (y-x)/y")
+        Function(self, self.bts_basic, lambda x,y : (y-x)/x  , nb_args = 2 ,bt_text = "Aug%", key = ["A","a"], label = "x,y : (y-x)/y")
 
         # Les menus
         self.menu_barre = tkinter.Menu(self.window,tearoff = 0)
@@ -132,7 +135,7 @@ class Fcalc(object):
         self.menu_barre.add_cascade(label = 'Fichier', underline = 0, menu = self.menu_fichier)
         self.menu_fichier.add_command(label = 'Export stack', underline = 0, state=tkinter.DISABLED, command = self.export)
         self.menu_fichier.add_checkbutton(label = 'Auto-save Config', underline = 11, variable = self.v_auto_save_config )
-        self.menu_fichier.add_checkbutton(label = 'Auto-save Datas', underline = 11, variable = self.v_auto_save_data )
+        self.menu_fichier.add_checkbutton(label = 'Auto-save Datas', underline = 11, variable = self.v_auto_save_data, state=tkinter.DISABLED  )
         self.menu_fichier.add_command(label = 'Quitter', underline = 0, command = self.window.quit)
         #Edition
         self.menu_edition = tkinter.Menu(self.menu_barre, tearoff =0)

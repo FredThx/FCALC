@@ -1,7 +1,4 @@
-* update
-* fichier de configuration
-  - options
-  - affichages
+* update (check github)
 * zone de log
 * Format de nombre
   - liée à stack_item
@@ -18,3 +15,12 @@
     - 1 + 0:18 = 1:18
     - 1 / 1% = 100
     - 1:00 / 0:50 = 1.2
+
+* multi language
+* skins
+* auto-save datas
+* export stack
+* plugins
+  * isoler les functions livrées
+  * fichier de function perso
+* faire un programme installer (option à l'install ou 2 fichiers dans release)
