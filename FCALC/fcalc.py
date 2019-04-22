@@ -5,6 +5,7 @@ import tkinter.messagebox
 import logging
 import math
 import locale
+import json
 
 import webbrowser
 
@@ -23,11 +24,14 @@ locale.setlocale(locale.LC_ALL, '')
 class Fcalc(object):
     '''Application Calculatrice
     '''
+    fonts = [8,10,12,14,16,18,24]
+
     def __init__(self, title = "Calculatrice", url_help = None):
         self.window = tkinter.Tk()
         self.title = title
         self.url_help = url_help
         self.keys = {}
+        self.window.protocol("WM_DELETE_WINDOW", self.close)
         self.init_ui()
 
     def run(self):
@@ -63,6 +67,21 @@ class Fcalc(object):
         self.t_command_line.focus_set()
         # keypad
         self.keypad = Keypad(self.zone2, self.do_keypad_event)
+
+        #PARAMETRES
+        self.v_auto_save_config = tkinter.IntVar()
+        self.v_auto_save_config.set(1)
+        self.v_auto_save_data = tkinter.IntVar()
+        self.v_auto_save_data.set(0)
+        self.v_buttons_visible = tkinter.IntVar()
+        self.v_buttons_visible.set(0)
+        self.v_zone3_visible = tkinter.IntVar()
+        self.v_zone3_visible.set(0)
+        self.v_keypad_visible = tkinter.IntVar()
+        self.v_keypad_visible.set(0)
+        self.v_font = tkinter.IntVar()
+        self.v_font.set(12)
+        self.load()
 
         # key manager
         self.window.bind_all("<Key>", self.key_manager)
@@ -112,6 +131,8 @@ class Fcalc(object):
         self.menu_fichier = tkinter.Menu(self.menu_barre, tearoff =0 )
         self.menu_barre.add_cascade(label = 'Fichier', underline = 0, menu = self.menu_fichier)
         self.menu_fichier.add_command(label = 'Export stack', underline = 0, state=tkinter.DISABLED, command = self.export)
+        self.menu_fichier.add_checkbutton(label = 'Auto-save Config', underline = 11, variable = self.v_auto_save_config )
+        self.menu_fichier.add_checkbutton(label = 'Auto-save Datas', underline = 11, variable = self.v_auto_save_data )
         self.menu_fichier.add_command(label = 'Quitter', underline = 0, command = self.window.quit)
         #Edition
         self.menu_edition = tkinter.Menu(self.menu_barre, tearoff =0)
@@ -123,20 +144,12 @@ class Fcalc(object):
         #Affichage
         self.menu_affichage = tkinter.Menu(self.menu_barre, tearoff =0)
         self.menu_barre.add_cascade(label = 'Affichage', underline = 0, menu = self.menu_affichage)
-        self.v_buttons_visible = tkinter.IntVar()
-        self.v_buttons_visible.set(0)
         self.menu_affichage.add_checkbutton(label = 'Boutons', underline = 0, variable = self.v_buttons_visible, command = self.toggle_buttons_visible)
-        self.v_zone3_visible = tkinter.IntVar()
-        self.v_zone3_visible.set(0)
         self.menu_affichage.add_checkbutton(label = 'Options-Résumé', underline = 0, variable = self.v_zone3_visible, command = self.toggle_zone3_visible)
-        self.v_keypad_visible = tkinter.IntVar()
-        self.v_keypad_visible.set(0)
         self.menu_affichage.add_checkbutton(label = 'Keypad', underline = 0, variable = self.v_keypad_visible, command = self.toggle_keypad_visible)
         self.menu_font = tkinter.Menu(self.menu_affichage, tearoff = 0)
         self.menu_affichage.add_cascade(label = "Font", menu = self.menu_font)
-        self.v_font = tkinter.IntVar()
-        self.v_font.set(12)
-        for font in [8,10,12,14,16,18,24]:
+        for font in Fcalc.fonts:
             self.menu_font.add_radiobutton(label = str(font), variable = self.v_font, command = self.change_font)
 
         #Aide
@@ -284,3 +297,55 @@ class Fcalc(object):
         '''When font change....
         '''
         self.stack.set_font()
+
+    def save(self):
+        '''Save all config to fcalc.json
+        To be saved:
+            -   v_buttons_visible
+            -   v_zone3_visible
+            -   v_keypad_visible
+            -   v_keypad_visible
+            -   self.window size
+            - TODO : avec option : la stack
+        '''
+        params = {}
+        params['buttons_visible'] = self.v_buttons_visible.get()
+        params['zone3_visible'] = self.v_zone3_visible.get()
+        params['keypad_visible'] = self.v_keypad_visible.get()
+        params['font'] = self.v_font.get()
+        params['window_geometry'] = self.window.geometry()
+        params['options'] = self.options.params()
+        with open('fcalc.json', 'w') as f:
+            json.dump(params, f)
+
+    def load(self):
+        '''Load fcalc.json if exist
+        '''
+        try:
+            f = open("fcalc.json",'r')
+            params = json.load(f)
+            if 'auto_save_config' in params:
+                self.v_auto_save_config.set(params['auto_save_config'])
+            if 'auto_save_data' in params:
+                self.v_auto_save_data.set(params['auto_save_data'])
+            if 'buttons_visible' in params:
+                self.v_buttons_visible.set(params['buttons_visible'])
+            if 'zone3_visible' in params:
+                self.v_zone3_visible.set(params['zone3_visible'])
+            if 'keypad_visible' in params:
+                self.v_keypad_visible.set(params['keypad_visible'])
+            if 'font' in params:
+                self.v_font.set(params['font'])
+            if 'window_geometry' in params :
+                self.window.geometry(params['window_geometry'])
+            if 'options' in params:
+                self.options.load(params['options'])
+        except FileNotFoundError:
+            pass
+
+    def close(self):
+        '''Close the App and save or not config
+        '''
+        if self.v_auto_save_config.get()==1:
+            self.save()
+        self.window.destroy()

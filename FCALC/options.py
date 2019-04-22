@@ -49,3 +49,20 @@ class Options(tkinter.Frame):
         '''Return the value of the option
         '''
         return self.opts[option].get()
+
+    def params(self):
+        '''return a dict with options
+        '''
+        params = {}
+        for option in Options.options:
+            params[option] = self.get(option)
+        return params
+
+    def load(self, params):
+        '''load options from a dict
+        '''
+        for option in Options.options:
+            try:
+                self.opts[option].set(params[option])
+            except:
+                pass
