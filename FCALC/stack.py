@@ -18,13 +18,13 @@ from . import clipboard
 class Stack(VerticalScrolledFrame):
     '''A stack for the calculator
     '''
-    def __init__(self, fcalc, height = None, **kw):
+    def __init__(self, fcalc, parent, height = None, **kw):
         '''Initialisation
             width		:	nb de colonnes (y compris l'index)
             col_names	:	tableau des noms de colonnes
         '''
         self.fcalc = fcalc
-        VerticalScrolledFrame.__init__(self, fcalc.window, height = height, min_width = 200, relief = 'groove',borderwidth = 5, **kw)
+        VerticalScrolledFrame.__init__(self, parent, height = height, min_width = 200, relief = 'groove',borderwidth = 5, **kw)
         self.items = []
         self.fictive_items = []
         self.bt_trash = tkinter.Button(self, text = "UNDELETE", command = self.undelete, state = 'disabled',wraplength = 1 )
@@ -39,7 +39,7 @@ class Stack(VerticalScrolledFrame):
 
     def grid(self, **kwargs):
         options = { \
-                    'padx' : 5, 'pady' : 5
+                    'padx' : 5, 'pady' : 5, 'sticky' : 'nesw'
                     }
         options.update(kwargs)
         super().grid(**options)

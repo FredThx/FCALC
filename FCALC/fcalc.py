@@ -41,7 +41,7 @@ class Fcalc(object):
         #Une zone avec des boutons
         self.buttons = tkinter.Frame(self.window)
         self.buttons.columnconfigure(0,weight=1)
-        # Une zone avec options et Summary
+        ## Une zone avec options et Summary
         self.zone3 = tkinter.Frame(self.window)
         self.zone3.columnconfigure(0,weight=1)
         # La zone des options
@@ -50,16 +50,19 @@ class Fcalc(object):
         # La zone des summary
         self.summary = Summary(self, self.zone3)
         self.summary.grid(column = 0, row = 1)
-        # Une zone avec la pile
-        self.stack = Stack(self,300)
-        self.stack.grid(column = 1, row = 0, rowspan = 1)
+        ## Une zone avec la stack, la ligne de commande et le Keypad
+        self.zone2 = tkinter.Frame(self.window)
+        self.zone2.grid(column = 1, row = 0, sticky = 'nesw')
+        # Stack
+        self.stack = Stack(self,self.zone2)
+        self.stack.grid(column = 0, row = 0)
         # La ligne de commandes
         self.v_command_line = tkinter.StringVar()
-        self.t_command_line = tkinter.Entry(self.window, textvariable = self.v_command_line)
-        self.t_command_line.grid(column = 1, row = 2, sticky = tkinter.S + tkinter.E + tkinter.W, padx = 10, pady = 5)
+        self.t_command_line = tkinter.Entry(self.zone2, textvariable = self.v_command_line)
+        self.t_command_line.grid(column = 0, row = 1, sticky = tkinter.S + tkinter.E + tkinter.W, padx = 10, pady = 5)
         self.t_command_line.focus_set()
-        # Le Pavé numérique
-        self.keypad = Keypad(self.window, self.do_keypad_event)
+        # keypad
+        self.keypad = Keypad(self.zone2, self.do_keypad_event)
 
         # key manager
         self.window.bind_all("<Key>", self.key_manager)
@@ -133,7 +136,7 @@ class Fcalc(object):
         self.menu_affichage.add_cascade(label = "Font", menu = self.menu_font)
         self.v_font = tkinter.IntVar()
         self.v_font.set(12)
-        for font in [12,14,16,18,24]:
+        for font in [8,10,12,14,16,18,24]:
             self.menu_font.add_radiobutton(label = str(font), variable = self.v_font, command = self.change_font)
 
         #Aide
@@ -147,6 +150,8 @@ class Fcalc(object):
         self.grid_zone3()
         self.grid_keypad()
         self.window.columnconfigure(1, minsize = 200, weight = 2)
+        self.window.rowconfigure(0, minsize = 100, weight = 1)
+        self.zone2.rowconfigure(0, minsize = 100, weight = 1)
 
 
     def grid_buttons(self):
@@ -166,7 +171,7 @@ class Fcalc(object):
             self.window.columnconfigure(2, minsize = 0, weight = 1)
     def grid_keypad(self):
         if self.v_keypad_visible.get():
-            self.keypad.grid(column = 1, row = 3)
+            self.keypad.grid(column = 0, row = 2)
         else:
             self.keypad.grid_forget()
 
