@@ -37,12 +37,12 @@ class StackItem(tkinter.Label):
 
         #Evenements
         self.bind('<Double-Button-1>', lambda event : self.duplicate())
-        self.bind('<Double-Button-3>', lambda event : self.delete())
+        #self.bind('<Double-Button-3>', lambda event : self.delete())
         self.bind('<Button-3>', self.popup_menu)
         self.bind("<ButtonPress-1>", self.on_drag_start)
         self.bind("<B1-Motion>", self.on_drag)
         self.bind("<ButtonRelease-1>", self.on_drop)
-        self.configure(cursor = "hand1")
+        self.configure(cursor = "fleur")
 
     def grid(self, **kwargs):
         options = { \
