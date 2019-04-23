@@ -17,7 +17,7 @@ from .infobulle import *
 class Function(object):
     ''' A Fcal function
     '''
-    def __init__(self, fcalc, parent, function, nb_args = 1 ,bt_text = None, key = None, is_return = False, delete1car = True, label = "" ):
+    def __init__(self, fcalc, parent, function, nb_args = 1 ,bt_text = None, key = None, is_return = False, delete1car = True, label = None, description = None ):
         '''Initialisation
             - bt_parent     :   tkinter parent for buttons
             - nb_args       :   nb of args used in the stack
@@ -29,19 +29,19 @@ class Function(object):
         self.name = bt_text or key or "undefined"
         self.is_return = is_return
         self.delete1car = delete1car
-        if len(label)==0:
-            label = bt_text or ""
-        if key:
-            label += "(Racc. : %s)"%key[0]
         if key:
             if not type(key)==list:
                 key = [key]
             for k in key:
                 fcalc.keys[k]=self
+        self.label = label or bt_text or key[0] or "?"
         if bt_text:
             self.button = tkinter.Button(parent, text = bt_text, command = self._function, width = 5)
             self.button.grid() #TODO : options
-            self.infobulle = InfoBulle(parent=self.button,texte=label)
+            text_bulle = description or label or bt_text or ""
+            if key:
+                text_bulle += "(Racc. : %s)"%key[0]
+            self.infobulle = InfoBulle(parent=self.button,texte=text_bulle)
 
     def _function(self):
         '''The function called by the ui

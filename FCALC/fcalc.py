@@ -107,10 +107,10 @@ class Fcalc(object):
         #Opérations basiques
         self.bts_basic = Buttonframe(self.buttons, text = "Basics")
         self.bts_basic.grid(row = 2)
-        Function(self, self.bts_basic, lambda x,y : x+y , nb_args = 2 ,key = ["plus","KP_Add"])
-        Function(self, self.bts_basic, lambda x,y : x-y  , nb_args = 2 , key = ["minus","KP_Subtract"])
-        Function(self, self.bts_basic, lambda x,y : x*y  , nb_args = 2 , key = ["asterisk","KP_Multiply"])
-        Function(self, self.bts_basic, lambda x,y : x/y  , nb_args = 2 , key = ["slash","KP_Divide"])
+        Function(self, self.bts_basic, lambda x,y : x+y , nb_args = 2 ,key = ["plus","KP_Add"], label = "+")
+        Function(self, self.bts_basic, lambda x,y : x-y  , nb_args = 2 , key = ["minus","KP_Subtract"], label = "-")
+        Function(self, self.bts_basic, lambda x,y : x*y  , nb_args = 2 , key = ["asterisk","KP_Multiply"], label = "*")
+        Function(self, self.bts_basic, lambda x,y : x/y  , nb_args = 2 , key = ["slash","KP_Divide"], label = "/")
         Function(self, self.bts_basic, lambda x : 1/x  , nb_args = 1 ,bt_text = "1/x", key = ["i","I"])
         #Fonction Trigo #TODO : gestion DEG-RAD
         self.bts_trig = Buttonframe(self.buttons, text = "Trigo")
@@ -126,7 +126,7 @@ class Fcalc(object):
         #Fonctions usuelles
         #self.bts_commons = Buttonframe(self.buttons, text = "Usuelles")
         #self.bts_commons.grid(row = 3)
-        Function(self, self.bts_basic, lambda x,y : (y-x)/x  , nb_args = 2 ,bt_text = "Aug%", key = ["A","a"], label = "x,y : (y-x)/y")
+        Function(self, self.bts_basic, lambda x,y : (y-x)/x  , nb_args = 2 ,bt_text = "Aug%", key = ["A","a"], description = "x,y : (y-x)/y")
 
         # Les menus
         self.menu_barre = tkinter.Menu(self.window,tearoff = 0)

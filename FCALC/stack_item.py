@@ -7,6 +7,7 @@ Usage :
 '''
 import tkinter as tkinter
 import logging
+from .infobulle import *
 
 class StackItem(tkinter.Label):
     '''Un item de la stack
@@ -35,6 +36,10 @@ class StackItem(tkinter.Label):
         self.aMenu.add_command(label = 'Copy', command = lambda: self.stack.copy_to_clipboard(self))
         self.aMenu.add_command(label = 'Cut', command = lambda: self.stack.cut_to_clipboard(self))
 
+        #InfoBulle
+        if self.function:
+            self.infobulle = InfoBulle(parent=self,texte=self.str_function())
+
         #Evenements
         self.bind('<Double-Button-1>', lambda event : self.duplicate())
         #self.bind('<Double-Button-3>', lambda event : self.delete())
@@ -56,13 +61,21 @@ class StackItem(tkinter.Label):
         '''
         return self.value
 
-    def __str__(self): #TODO : faire plus lisible!
-        if self.stack.fcalc.options.get('detail')=='on' and self.function:
-            return "%s=%s(%s)"%(self.value, self.function.name, [str(arg) for arg in self.args])
+    def __str__(self):
+        if self.stack.fcalc.options.get('detail')=='on':
+            return str(self.str_function())
         else:
             return str(self.value)
 
     __repr__ = __str__ # A LA CON, mais ça marche
+
+    def str_function(self):
+        '''Return a string with the history of the value
+        '''
+        if self.function:
+            return "%s=%s%s"%(self.value, self.function.label, [arg.str_function() for arg in self.args])
+        else:
+            return self.value
 
     def set(self, value):
         '''Set the value
