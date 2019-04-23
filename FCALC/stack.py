@@ -90,7 +90,7 @@ class Stack(VerticalScrolledFrame):
             item = StackItem(self, value)
             self.items.append(item)
             item.grid()
-            logging.debug("Put %s to stack"%str(item))
+            logging.debug("Put new %s to stack"%str(item))
         self.is_updated()
 
     def put_items(self, *items):
@@ -100,7 +100,7 @@ class Stack(VerticalScrolledFrame):
             logging.debug('oups')
             items = [items]
         for item in items:
-            logging.debug("Put %s to stack"%str(item))
+            logging.debug("Put existing %s to stack"%str(item))
             self.items.append(item)
             item.grid()
         self.is_updated()

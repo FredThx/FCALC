@@ -62,12 +62,13 @@ class Function(object):
                     args = self.fcalc.stack.get_all()
                 else:
                     args = self.fcalc.stack.get(self.nb_args)
+                logging.debug("Execute %s with args=%s"%(self, args))
                 self.execute_function(*args)
             except Fcalc_error_stacktoosmall:
                 logging.info("Not enought arguments.")
             except (ArithmeticError, ValueError) as e:
                 logging.info(e)
-                self.fcalc.stack.put(args)
+                self.fcalc.stack.put_items(*args)
 
     def execute_function(self, *args):
         '''Execut the fonction and put result and self to stack
