@@ -8,6 +8,7 @@ Usage :
 import tkinter as tkinter
 import logging
 import locale
+import csv
 
 from .scrframe import *
 from .stack_item import *
@@ -181,3 +182,16 @@ class Stack(VerticalScrolledFrame):
             item.set_font()
         for item in self.fictive_items:
             item.set_font()
+    def export_csv(self, file):
+        '''Export the values to a cvs file
+        If fail, return the exception
+        else return True
+        '''
+        try:
+            with open(file, 'w', newline='') as csvfile:
+                spamwriter = csv.writer(csvfile, delimiter=';')
+                for item in self.items:
+                    spamwriter.writerow([locale.str(item.get())])
+            return True
+        except Exception as e:
+            return e

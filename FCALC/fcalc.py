@@ -2,10 +2,12 @@
 
 import tkinter as tkinter
 import tkinter.messagebox
+import tkinter.filedialog
 import logging
 import math
 import locale
 import json
+import os
 
 import webbrowser
 
@@ -28,6 +30,7 @@ class Fcalc(object):
 
     def __init__(self, title = "Calculatrice", url_help = None):
         self.window = tkinter.Tk()
+        self.path = os.path.expanduser('~')
         self.title = title
         self.url_help = url_help
         self.keys = {}
@@ -133,7 +136,7 @@ class Fcalc(object):
         #Fichier
         self.menu_fichier = tkinter.Menu(self.menu_barre, tearoff =0 )
         self.menu_barre.add_cascade(label = 'Fichier', underline = 0, menu = self.menu_fichier)
-        self.menu_fichier.add_command(label = 'Export stack', underline = 0, state=tkinter.DISABLED, command = self.export)
+        self.menu_fichier.add_command(label = 'Export stack', underline = 0, command = self.export)
         self.menu_fichier.add_checkbutton(label = 'Auto-save Config', underline = 11, variable = self.v_auto_save_config )
         self.menu_fichier.add_checkbutton(label = 'Auto-save Datas', underline = 11, variable = self.v_auto_save_data, state=tkinter.DISABLED  )
         self.menu_fichier.add_command(label = 'Quitter', underline = 0, command = self.window.quit)
@@ -239,7 +242,17 @@ class Fcalc(object):
             webbrowser.open_new(self.url_help)
 
     def export(self):
-        pass
+        file = tkinter.filedialog.asksaveasfilename( \
+                defaultextension = '.csv', \
+                filetypes = [('Les valeurs (csv)', '*.csv')], \
+                initialdir = self.path, \
+                title = "Export Stack")
+        if len(file)>0:
+            result = self.stack.export_csv(file)
+            if result == True:
+                tkinter.messagebox.showinfo("Export Stack", "File %s created."%file)
+            else:
+                tkinter.messagebox.showerror("Export Stack", "%s"%result)
 
     def copy(self):
         '''Copy command_line or last stack_item
@@ -318,6 +331,7 @@ class Fcalc(object):
         params['font'] = self.v_font.get()
         params['window_geometry'] = self.window.geometry()
         params['options'] = self.options.params()
+        params['path'] = self.path
         with open('fcalc.json', 'w') as f:
             json.dump(params, f)
 
@@ -343,6 +357,8 @@ class Fcalc(object):
                 self.window.geometry(params['window_geometry'])
             if 'options' in params:
                 self.options.load(params['options'])
+            if 'path' in params:
+                self.path = params['path']
         except FileNotFoundError:
             pass
 

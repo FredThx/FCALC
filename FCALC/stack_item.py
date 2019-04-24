@@ -7,6 +7,8 @@ Usage :
 '''
 import tkinter as tkinter
 import logging
+import locale
+
 from .infobulle import *
 
 class StackItem(tkinter.Label):
@@ -65,7 +67,7 @@ class StackItem(tkinter.Label):
         if self.stack.fcalc.options.get('detail')=='on':
             return str(self.str_function())
         else:
-            return "%s"%self.value
+            return locale.str(self.value)
 
     __repr__ = __str__ # A LA CON, mais ça marche
 
