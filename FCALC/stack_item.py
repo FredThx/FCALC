@@ -67,8 +67,10 @@ class StackItem(tkinter.Label):
         if self.stack.fcalc.options.get('detail')=='on':
             return str(self.str_function())
         else:
-            return locale.str(self.value)
-
+            if self.value:
+                return locale.str(self.value)
+            else:
+                return "None"
     __repr__ = __str__ # A LA CON, mais ça marche
 
     def str_function(self):
