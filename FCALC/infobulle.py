@@ -24,12 +24,8 @@ class InfoBulle(tk.Toplevel):
 		self.action=self.parent.after(self.tps,self.affiche)
 	def affiche(self):
 		self.update_idletasks()
-		posX = self.parent.winfo_rootx()+int(self.parent.winfo_width()/3)
+		posX = self.parent.winfo_rootx()+20
 		posY = self.parent.winfo_rooty()-int(self.parent.winfo_height())
-		if posX + self.tipwidth > self.winfo_screenwidth():
-			posX = posX-self.winfo_width()-self.tipwidth
-		if posY + self.tipheight > self.winfo_screenheight():
-			posY = posY-self.winfo_height()-self.tipheight
 		#~ print posX,print posY
 		self.geometry('+%d+%d'%(posX,posY))
 		self.deiconify()
