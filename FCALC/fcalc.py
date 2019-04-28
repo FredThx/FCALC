@@ -115,6 +115,7 @@ class Fcalc(object):
         Function_operator(self, self.bts_basic, lambda x,y : x*y  , nb_args = 2 , key = ["asterisk","KP_Multiply"], label = "*")
         Function_operator(self, self.bts_basic, lambda x,y : x/y  , nb_args = 2 , key = ["slash","KP_Divide"], label = "/")
         Function(self, self.bts_basic, lambda x : 1/x  , nb_args = 1 ,bt_text = "1/x", key = ["i","I"], format = "1/%s")
+        Function(self, self.bts_basic, lambda x : -x  , nb_args = 1 ,bt_text = "+/-", key = ["n","N"], format = "-%s")
         #Fonction Trigo #TODO : gestion DEG-RAD
         self.bts_trig = Buttonframe(self.buttons, text = "Trigo")
         self.bts_trig.grid(row = 1)
