@@ -110,11 +110,11 @@ class Fcalc(object):
         #Opérations basiques
         self.bts_basic = Buttonframe(self.buttons, text = "Basics")
         self.bts_basic.grid(row = 2)
-        Function(self, self.bts_basic, lambda x,y : x+y , nb_args = 2 ,key = ["plus","KP_Add"], label = "+")
-        Function(self, self.bts_basic, lambda x,y : x-y  , nb_args = 2 , key = ["minus","KP_Subtract"], label = "-")
-        Function(self, self.bts_basic, lambda x,y : x*y  , nb_args = 2 , key = ["asterisk","KP_Multiply"], label = "*")
-        Function(self, self.bts_basic, lambda x,y : x/y  , nb_args = 2 , key = ["slash","KP_Divide"], label = "/")
-        Function(self, self.bts_basic, lambda x : 1/x  , nb_args = 1 ,bt_text = "1/x", key = ["i","I"])
+        Function_operator(self, self.bts_basic, lambda x,y : x+y , nb_args = 2 ,key = ["plus","KP_Add"], label = "+")
+        Function_operator(self, self.bts_basic, lambda x,y : x-y  , nb_args = 2 , key = ["minus","KP_Subtract"], label = "-")
+        Function_operator(self, self.bts_basic, lambda x,y : x*y  , nb_args = 2 , key = ["asterisk","KP_Multiply"], label = "*")
+        Function_operator(self, self.bts_basic, lambda x,y : x/y  , nb_args = 2 , key = ["slash","KP_Divide"], label = "/")
+        Function(self, self.bts_basic, lambda x : 1/x  , nb_args = 1 ,bt_text = "1/x", key = ["i","I"], format = "1/%s")
         #Fonction Trigo #TODO : gestion DEG-RAD
         self.bts_trig = Buttonframe(self.buttons, text = "Trigo")
         self.bts_trig.grid(row = 1)

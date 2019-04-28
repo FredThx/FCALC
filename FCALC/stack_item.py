@@ -40,7 +40,7 @@ class StackItem(tkinter.Label):
 
         #InfoBulle
         if self.function:
-            self.infobulle = InfoBulle(parent=self,texte=self.str_function())
+            self.infobulle = InfoBulle(parent=self,texte=self.str_detail())
 
         #Evenements
         self.bind('<Double-Button-1>', lambda event : self.duplicate())
@@ -63,23 +63,24 @@ class StackItem(tkinter.Label):
         '''
         return self.value
 
-    def __str__(self):
-        if self.stack.fcalc.options.get('detail')=='on':
-            return str(self.str_function())
-        else:
-            if self.value:
-                return locale.str(self.value)
-            else:
-                return "None"
-    __repr__ = __str__ # A LA CON, mais ça marche
-
-    def str_function(self):
-        '''Return a string with the history of the value
+    def str_detail(self):
+        '''Return a string, the detail calculation
         '''
         if self.function:
-            return "%s=%s%s"%(self.value, self.function.label, [arg.str_function() for arg in self.args])
+            return self.function.str_detail(*self.args)
         else:
-            return self.value
+            return locale.str(self.value)
+
+    def __str__(self):
+        if self.stack.fcalc.options.get('detail')=='on':
+            return locale.str(self.value) + "=" + str(self.str_detail())
+        else:
+            if self.value is None:
+                return "None"
+            else:
+                return locale.str(self.value)
+
+    __repr__ = __str__ # A LA CON, mais ça marche
 
     def set(self, value):
         '''Set the value

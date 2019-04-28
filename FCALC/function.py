@@ -17,7 +17,7 @@ from .infobulle import *
 class Function(object):
     ''' A Fcal function
     '''
-    def __init__(self, fcalc, parent, function, nb_args = 1 ,bt_text = None, key = None, is_return = False, delete1car = True, label = None, description = None ):
+    def __init__(self, fcalc, parent, function, nb_args = 1 ,bt_text = None, key = None, is_return = False, delete1car = True, label = None, description = None, format = None  ):
         '''Initialisation
             - bt_parent     :   tkinter parent for buttons
             - nb_args       :   nb of args used in the stack
@@ -42,6 +42,11 @@ class Function(object):
             if key:
                 text_bulle += "(Racc. : %s)"%key[0]
             self.infobulle = InfoBulle(parent=self.button,texte=text_bulle)
+        if format:
+            assert format.count("%")==self.nb_args, "Error in fonction %s : format not valid."%self.name
+            self.str_format = format
+        else:
+            self.init_format()
 
     def _function(self):
         '''The function called by the ui
@@ -78,6 +83,34 @@ class Function(object):
             values = [values]
         for value in values:
             self.fcalc.stack.put_items(StackItem(self.fcalc.stack, value, self, args))
+
+    def init_format(self):
+        '''Initialise str_format : "FONCTION_NAME(%s,%s, ...)""
+        '''
+        self.str_format = "%s("%self.label
+        if self.nb_args == "All":
+            nb_args = 0
+        else:
+            nb_args = self.nb_args
+        for i in range(nb_args):
+            self.str_format += "%s"
+            if i < nb_args - 1:
+                self.str_format += ";"
+        self.str_format += ")"
+
+    def str_detail(self, *args):
+        '''Return a string, the detail calculation
+        '''
+        return self.str_format % tuple([arg.str_detail() for arg in args])
+
+class Function_operator(Function):
+    '''Function for operators (+,-,*,/)
+    '''
+    def init_format(self):
+        '''Initialise str_format : "%s+%s"
+        '''
+        self.str_format = "(%s"+self.label+"%s)"
+
 
 class Function_stack(Function):
     '''Function for stack manipulation
