@@ -73,7 +73,10 @@ class StackItem(tkinter.Label):
 
     def __str__(self):
         if self.stack.fcalc.options.get('detail')=='on':
-            return locale.str(self.value) + "=" + str(self.str_detail())
+            if self.function:
+                return locale.str(self.value) + "=" + str(self.str_detail())
+            else:
+                return locale.str(self.value)
         else:
             if self.value is None:
                 return "None"

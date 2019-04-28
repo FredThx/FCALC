@@ -2,13 +2,15 @@
 import tkinter as tk
 
 class InfoBulle(tk.Toplevel):
-	def __init__(self,parent=None,texte='',temps=1000):
+	def __init__(self,parent=None,texte='',temps=1000, max_lenght = 25):
 		tk.Toplevel.__init__(self,parent,bd=1,bg='black')
 		self.tps=temps
 		self.parent=parent
 		self.withdraw()
 		self.overrideredirect(1)
 		self.transient()
+		if len(texte)> max_lenght:
+			texte = texte[:max_lenght] + "..."
 		l=tk.Label(self,text=texte,bg="yellow",justify='left')
 		l.update_idletasks()
 		l.pack()
