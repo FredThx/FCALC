@@ -14,7 +14,7 @@ from .infobulle import *
 class StackItem(tkinter.Label):
     '''Un item de la stack
     '''
-    def __init__(self, stack, value = 0, function = None, args = ()):
+    def __init__(self, stack, value = 0, function = None, args = (), width = 250):
         '''Initialisation
             - value             : the value
             - function          : function off the calcul (optional)
@@ -26,7 +26,7 @@ class StackItem(tkinter.Label):
         self.args = args
         self.stack = stack
         self.v_text.set(str(self))
-        tkinter.Label.__init__(self, stack.interior, textvariable = self.v_text, width = 25, anchor = 'sw',justify = 'right')
+        tkinter.Label.__init__(self, stack.interior, textvariable = self.v_text, wraplength =width, anchor = 'sw',justify = 'right')
         self.set_font()
         #Menu contextuel
         self.aMenu = tkinter.Menu(self, tearoff = 0)
