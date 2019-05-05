@@ -6,6 +6,7 @@ Un Frame tkinter
 Usage :
 '''
 import tkinter as tkinter
+import locale
 
 from FUTIL.my_logging import *
 
@@ -25,12 +26,12 @@ class Summary(tkinter.Frame):
         self.fcalc = fcalc
         tkinter.Frame.__init__(self, parent, relief = 'groove',borderwidth = 2, *args, **kw)
         self.v_type = tkinter.StringVar()
-        self.value = tkinter.DoubleVar()
-        self.value.set(0)
+        self.value = tkinter.StringVar()
+        self.value.set("")
         self.v_type.set(list(Summary.functions.keys())[0])
         for f in Summary.functions:
             tkinter.Radiobutton(self, variable = self.v_type, text = f, value = f, command = self.update).grid( sticky = 'nw')
-        tkinter.Label(self, textvariable  = self.value).grid()
+        tkinter.Label(self, textvariable  = self.value).grid(sticky = 'ne')
 
     def grid(self, **kwargs):
         options = {'sticky' : tkinter.E + tkinter.W, \
@@ -38,8 +39,8 @@ class Summary(tkinter.Frame):
                     }
         options.update(kwargs)
         super().grid(**options)
-        
+
     def update(self):
         '''Update the value
         '''
-        self.value.set(Summary.functions[self.v_type.get()](*(self.fcalc.stack.get_values())))
+        self.value.set(locale.str(Summary.functions[self.v_type.get()](*(self.fcalc.stack.get_values()))))
