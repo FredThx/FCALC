@@ -130,7 +130,7 @@ class Fcalc(object):
         #Fonctions usuelles
         #self.bts_commons = Buttonframe(self.buttons, text = "Usuelles")
         #self.bts_commons.grid(row = 3)
-        Function(self, self.bts_basic, lambda x,y : (y-x)/x  , nb_args = 2 ,bt_text = "Aug%", key = ["A","a"], description = "x,y : (y-x)/y")
+        Function(self, self.bts_basic, lambda x,y : (y-x)/x  , nb_args = 2 , bt_text = "Aug%", key = ["A","a"], description = "x,y : (y-x)/y", format = "Aug(%s,%s)")
         Function(self, self.bts_basic, lambda x : x*x, nb_args = 1, bt_text = "x^2", description = "carré")
         Function(self, self.bts_basic, lambda x,y : x**y, nb_args = 2, bt_text = "x^y", key = ["P","p"], description = "x puiss. y")
         Function(self, self.bts_basic, lambda x : x**0.5, nb_args = 1, bt_text = "SQRT", key = ["R","r"], description = "Racinne")
