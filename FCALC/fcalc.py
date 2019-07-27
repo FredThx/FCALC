@@ -261,7 +261,7 @@ class Fcalc(object):
         '''Copy command_line or last stack_item
         '''
         if len(self.v_command_line.get())==0:
-            self.stack.copy_to_clipboard()
+            clipboard.copy(locale.str(self.stack.get_values(1)[0]))
         else:
             try:
                 clipboard.copy(locale.str(float(self.v_command_line.get())))
@@ -294,6 +294,7 @@ class Fcalc(object):
         if len(self.v_command_line.get())>0:
             self.v_command_line.set("")
         else:
+            print("self.stack.get()")
             self.stack.get()
 
     @staticmethod

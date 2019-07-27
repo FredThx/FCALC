@@ -167,13 +167,6 @@ class Stack(VerticalScrolledFrame):
         '''
         self.aMenu.post(event.x_root, event.y_root)
 
-    def copy_to_clipboard(self, item = None):
-        '''Copy the value of the item to clipboard
-        if item is None, the last one is used
-        '''
-        if not item:
-            item = self.get_values(1)[0]
-        clipboard.copy(locale.str(item.get()))
 
     def set_font(self):
         '''Change the font of all items
