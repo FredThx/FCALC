@@ -8,6 +8,7 @@ import math
 import locale
 import json
 import os
+import wget
 
 import webbrowser
 
@@ -20,6 +21,8 @@ from .options import *
 from .buttons_frame import *
 from .keypad import *
 from .version import __version__
+from .github import *
+from .get_application_path import *
 
 locale.setlocale(locale.LC_ALL, '')
 
@@ -27,6 +30,9 @@ class Fcalc(object):
     '''Application Calculatrice
     '''
     fonts = [8,10,12,14,16,18,24]
+
+    github_owner = "FredThx"
+    github_repo = "FCALC"
 
     def __init__(self, title = "Calculatrice", url_help = None):
         self.window = tkinter.Tk()
@@ -36,6 +42,7 @@ class Fcalc(object):
         self.keys = {}
         self.window.protocol("WM_DELETE_WINDOW", self.close)
         self.init_ui()
+        self.check_update()
 
     def run(self):
         self.window.mainloop()
@@ -166,6 +173,7 @@ class Fcalc(object):
         self.menu_barre.add_cascade(label = 'Aide', underline = 1, menu = self.menu_aide)
         self.menu_aide.add_command(label = 'A propos', underline = 0, command = self.about)
         self.menu_aide.add_command(label = 'Aide', underline = 1, command = self.help)
+        self.menu_aide.add_command(label = 'Mises à jours...', underline = 0, command = self.check_update)
         self.window.config(menu = self.menu_barre)
 
         self.grid_buttons()
@@ -372,3 +380,23 @@ class Fcalc(object):
         if self.v_auto_save_config.get()==1:
             self.save()
         self.window.destroy()
+
+    def check_update(self):
+        '''Check for update on github
+        '''
+        github = Github(self.github_owner, self.github_repo)
+        url_release = github.url_update(__version__)
+        if url_release:
+            if tkinter.messagebox.askokcancel("Nouvelle version disponible on Github","Voulez vous la télécharger?"):
+                file = tkinter.filedialog.asksaveasfilename( \
+                        filetypes = [('Fichier executable', '*.exe')], \
+                        initialdir =  get_application_path(), \
+                        initialfile = "fcalc.exe", \
+                        title = "Enregistrer la nouvelle release (%s)"%url_release)
+                if len(file)>0:
+                    try:
+                        wget.download(url_release, file)
+                        tkinter.messagebox.showinfo("Téléchargement réussit. Fermez/ouvrez l'application pour mise a jour")
+                    except:
+                        logging.info("Error downloading %s"%url)
+                        tkinter.messagebox.showerror("Erreur lors du téléchargement!")
