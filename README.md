@@ -7,9 +7,11 @@
 Juste copy the fcalc.exe file from the lastest release.
 And execute it.
 
-## from sources
+## execute from sources
 
+```
 python fcalc.py
+```
 
 ## help
 
