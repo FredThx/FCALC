@@ -3,6 +3,7 @@ Github class for use Github API V3 to check if a new release is available on Git
 '''
 
 import requests
+from packaging import version
 
 
 class Github:
@@ -36,5 +37,5 @@ class Github:
         '''If a new release is available, return the download url
         '''
         last_release = self.get_last_release(**kwargs)
-        if last_release and last_release['tag_name'] > actual_version:
+        if last_release and version.parse(last_release['tag_name']) > version.parse(actual_version):
             return last_release['assets'][0]['browser_download_url']
