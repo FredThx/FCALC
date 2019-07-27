@@ -394,9 +394,15 @@ class Fcalc(object):
                         initialfile = "fcalc.exe", \
                         title = "Enregistrer la nouvelle release (%s)"%url_release)
                 if len(file)>0:
+                    if os.path.exists(file):
+                        if os.path.exists(file + '.bak'):
+                            os.remove(file + ".bak")
+                        os.rename(file, file + ".bak")
                     try:
-                        wget.download(url_release, file)
-                        tkinter.messagebox.showinfo("Téléchargement réussit. Fermez/ouvrez l'application pour mise a jour")
+                        destination_file = wget.download(url_release, file) #TODO : un peu d'animation
+                        tkinter.messagebox.showinfo("Fcalc","Téléchargement réussit. L'application va redémarrer.")
+                        os.system("start %s"%file)
+                        self.close()
                     except:
                         logging.info("Error downloading %s"%url)
-                        tkinter.messagebox.showerror("Erreur lors du téléchargement!")
+                        tkinter.messagebox.showerror("Fcalc","Erreur lors du téléchargement!")
