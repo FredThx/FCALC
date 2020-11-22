@@ -4,7 +4,7 @@ import tkinter as tkinter
 import tkinter.messagebox
 import tkinter.filedialog
 import logging
-import math
+import math, statistics
 import locale
 import json
 import os
@@ -84,8 +84,11 @@ class Fcalc(object):
         self.v_auto_save_config.set(1)
         self.v_auto_save_data = tkinter.IntVar()
         self.v_auto_save_data.set(0)
-        self.v_buttons_visible = tkinter.IntVar()
-        self.v_buttons_visible.set(0)
+        self.v_buttons_visible = {}
+        self.buttons_frame_name = ["stack", "basics", "trigo", "maths", "stats"]
+        for button_frame in self.buttons_frame_name:
+            self.v_buttons_visible[button_frame] = tkinter.IntVar()
+            self.v_buttons_visible[button_frame].set(0)
         self.v_zone3_visible = tkinter.IntVar()
         self.v_zone3_visible.set(0)
         self.v_keypad_visible = tkinter.IntVar()
@@ -106,41 +109,52 @@ class Fcalc(object):
 
         # Les fonction
         # fonction de manipulation de stack (pas d'historisation)
-        self.bts_stack = Buttonframe(self.buttons, text = "Stack")
-        self.bts_stack.grid(row = 0)
-        Function_stack(self, self.bts_stack, lambda x : (x,x.clone()) , nb_args = 1 ,bt_text = "Dup", key = ["Return","KP_Enter"], is_return = True, delete1car = False)
-        Function_stack(self, self.bts_stack, lambda x : () , nb_args = 1 ,bt_text = "CE", key = "Delete", delete1car = False)
-        Function_stack(self, self.bts_stack, lambda x, y : (y,x)  , nb_args = 2 ,bt_text = "SWAP", key = ["s","S"])
-        Function_stack(self, self.bts_stack, lambda *x : ()  , nb_args = "All" ,bt_text = "CLEAR")
-        Function_stack(self, self.bts_stack, lambda *x : x[1:]+(x[0],)  , nb_args = "All" ,bt_text = "ROLL", key = ["r", "R"])
-        Function_stack(self, self.bts_stack, lambda x : x.undo() , nb_args = 1 ,bt_text = "Undo", key = ["u","U"])
+        self.bts = {}
+        self.bts['stack'] = Buttonframe(self.buttons, text = "Stack")
+        self.bts['stack'].grid(row = 0)
+        Function_stack(self, self.bts['stack'], lambda x : (x,x.clone()) , nb_args = 1 ,bt_text = "Dup", key = ["Return","KP_Enter"], is_return = True, delete1car = False)
+        Function_stack(self, self.bts['stack'], lambda x : () , nb_args = 1 ,bt_text = "CE", key = "Delete", delete1car = False)
+        Function_stack(self, self.bts['stack'], lambda x, y : (y,x)  , nb_args = 2 ,bt_text = "SWAP", key = ["s","S"])
+        Function_stack(self, self.bts['stack'], lambda *x : ()  , nb_args = "All" ,bt_text = "CLEAR")
+        Function_stack(self, self.bts['stack'], lambda *x : x[1:]+(x[0],)  , nb_args = "All" ,bt_text = "ROLL", key = ["r", "R"])
+        Function_stack(self, self.bts['stack'], lambda x : x.undo() , nb_args = 1 ,bt_text = "Undo", key = ["u","U"])
         #Opérations basiques
-        self.bts_basic = Buttonframe(self.buttons, text = "Basics")
-        self.bts_basic.grid(row = 2)
-        Function_operator(self, self.bts_basic, lambda x,y : x+y , nb_args = 2 ,key = ["plus","KP_Add"], label = "+")
-        Function_operator(self, self.bts_basic, lambda x,y : x-y  , nb_args = 2 , key = ["minus","KP_Subtract"], label = "-")
-        Function_operator(self, self.bts_basic, lambda x,y : x*y  , nb_args = 2 , key = ["asterisk","KP_Multiply"], label = "*")
-        Function_operator(self, self.bts_basic, lambda x,y : x/y  , nb_args = 2 , key = ["slash","KP_Divide"], label = "/")
-        Function(self, self.bts_basic, lambda x : 1/x  , nb_args = 1 ,bt_text = "1/x", key = ["i","I"], format = "1/%s")
-        Function(self, self.bts_basic, lambda x : -x  , nb_args = 1 ,bt_text = "+/-", key = ["n","N"], format = "-%s")
+        self.bts['basics'] = Buttonframe(self.buttons, text = "Basics")
+        self.bts['basics'].grid(row = 2)
+        Function_operator(self, self.bts['basics'], lambda x,y : x+y , nb_args = 2 ,key = ["plus","KP_Add"], label = "+")
+        Function_operator(self, self.bts['basics'], lambda x,y : x-y  , nb_args = 2 , key = ["minus","KP_Subtract"], label = "-")
+        Function_operator(self, self.bts['basics'], lambda x,y : x*y  , nb_args = 2 , key = ["asterisk","KP_Multiply"], label = "*")
+        Function_operator(self, self.bts['basics'], lambda x,y : x/y  , nb_args = 2 , key = ["slash","KP_Divide"], label = "/")
+        Function(self, self.bts['basics'], lambda x : 1/x  , nb_args = 1 ,bt_text = "1/x", key = ["i","I"], format = "1/%s")
+        Function(self, self.bts['basics'], lambda x : -x  , nb_args = 1 ,bt_text = "+/-", key = ["n","N"], format = "-%s")
+        Function(self, self.bts['basics'], lambda x,y : (y-x)/x  , nb_args = 2 , bt_text = "Aug%", key = ["A","a"], description = "x,y : (y-x)/y", format = "Aug(%s,%s)")
+        Function(self, self.bts['basics'], lambda x : x*x, nb_args = 1, bt_text = "x^2", description = "carré")
+        Function(self, self.bts['basics'], lambda x,y : x**y, nb_args = 2, bt_text = "x^y", key = ["P","p"], description = "x puiss. y")
+        Function(self, self.bts['basics'], lambda x : x**0.5, nb_args = 1, bt_text = "SQRT", key = ["R","r"], description = "Racinne")
         #Fonction Trigo #TODO : gestion DEG-RAD
-        self.bts_trig = Buttonframe(self.buttons, text = "Trigo")
-        self.bts_trig.grid(row = 1)
-        Function_angle_out(self, self.bts_trig, lambda *x : math.pi , nb_args = 0 ,bt_text = "PI")
-        Function_angle_in(self, self.bts_trig, lambda x : math.sin(x) , nb_args = 1 ,bt_text = "SIN")
-        Function_angle_in(self, self.bts_trig, lambda x : math.cos(x) , nb_args = 1 ,bt_text = "COS")
-        Function_angle_out(self, self.bts_trig, lambda x : math.asin(x) , nb_args = 1 ,bt_text = "ASIN")
-        Function_angle_out(self, self.bts_trig, lambda x : math.acos(x) , nb_args = 1 ,bt_text = "ACOS")
-        Function_angle_in(self, self.bts_trig, lambda x : math.tan(x) , nb_args = 1 ,bt_text = "TAN")
-        Function_angle_out(self, self.bts_trig, lambda x : math.atan(x) , nb_args = 1 ,bt_text = "ATAN")
-        Function_angle_out(self, self.bts_trig, lambda x : math.atan2(x) , nb_args = 2 ,bt_text = "ATAN2")
-        #Fonctions usuelles
-        #self.bts_commons = Buttonframe(self.buttons, text = "Usuelles")
-        #self.bts_commons.grid(row = 3)
-        Function(self, self.bts_basic, lambda x,y : (y-x)/x  , nb_args = 2 , bt_text = "Aug%", key = ["A","a"], description = "x,y : (y-x)/y", format = "Aug(%s,%s)")
-        Function(self, self.bts_basic, lambda x : x*x, nb_args = 1, bt_text = "x^2", description = "carré")
-        Function(self, self.bts_basic, lambda x,y : x**y, nb_args = 2, bt_text = "x^y", key = ["P","p"], description = "x puiss. y")
-        Function(self, self.bts_basic, lambda x : x**0.5, nb_args = 1, bt_text = "SQRT", key = ["R","r"], description = "Racinne")
+        self.bts['trigo'] = Buttonframe(self.buttons, text = "Trigo")
+        self.bts['trigo'].grid(row = 1)
+        Function_angle_out(self, self.bts['trigo'], lambda *x : math.pi , nb_args = 0 ,bt_text = "PI")
+        Function_angle_in(self, self.bts['trigo'], lambda x : math.sin(x) , nb_args = 1 ,bt_text = "SIN")
+        Function_angle_in(self, self.bts['trigo'], lambda x : math.cos(x) , nb_args = 1 ,bt_text = "COS")
+        Function_angle_out(self, self.bts['trigo'], lambda x : math.asin(x) , nb_args = 1 ,bt_text = "ASIN")
+        Function_angle_out(self, self.bts['trigo'], lambda x : math.acos(x) , nb_args = 1 ,bt_text = "ACOS")
+        Function_angle_in(self, self.bts['trigo'], lambda x : math.tan(x) , nb_args = 1 ,bt_text = "TAN")
+        Function_angle_out(self, self.bts['trigo'], lambda x : math.atan(x) , nb_args = 1 ,bt_text = "ATAN")
+        Function_angle_out(self, self.bts['trigo'], lambda x : math.atan2(x) , nb_args = 2 ,bt_text = "ATAN2")
+        Function(self, self.bts['trigo'], lambda x : math.degrees(x) , nb_args = 1 ,bt_text = "->Deg")
+        Function(self, self.bts['trigo'], lambda x : math.radians(x) , nb_args = 1 ,bt_text = "->Rad")
+
+        #Mathématiques
+        self.bts['maths'] = Buttonframe(self.buttons, text = "Maths")
+        self.bts['maths'].grid(row = 3)
+        Function(self, self.bts['maths'], lambda x : math.exp(x)  , nb_args = 1 , bt_text = "Exp", key = ["E","e"], description = "x : exp(x)", format = "e^%s")
+        Function(self, self.bts['maths'], lambda x : math.log(x)  , nb_args = 1 , bt_text = "Ln", key = ["L","l"], description = "x : ln(x)", format = "ln(%s)")
+        Function(self, self.bts['maths'], lambda x : math.log10(x)  , nb_args = 1 , bt_text = "Log10", key = [], description = "x : log10(x)", format = "log10(%s)")
+        #Statistiques
+        self.bts['stats'] = Buttonframe(self.buttons, text = "Statistiques")
+        self.bts['stats'].grid(row = 4)
+        Function_n_args(self, self.bts['stats'], lambda *x : statistics.mean(List(*x)) , bt_text = "x̄", key = ["M","m"], description = "a1,...an,n Σ(a1,...an)/n: ", format = None)
         # Les menus
         self.menu_barre = tkinter.Menu(self.window,tearoff = 0)
         #Fichier
@@ -160,7 +174,10 @@ class Fcalc(object):
         #Affichage
         self.menu_affichage = tkinter.Menu(self.menu_barre, tearoff =0)
         self.menu_barre.add_cascade(label = 'Affichage', underline = 0, menu = self.menu_affichage)
-        self.menu_affichage.add_checkbutton(label = 'Boutons', underline = 0, variable = self.v_buttons_visible, command = self.toggle_buttons_visible)
+        self.menu_boutons = tkinter.Menu(self.menu_affichage, tearoff = 0)
+        self.menu_affichage.add_cascade(label = 'Boutons', underline = 0, menu = self.menu_boutons)
+        for button_frame_name in self.bts:
+            self.menu_boutons.add_checkbutton(label = button_frame_name, variable = self.v_buttons_visible[button_frame_name], command = lambda: self.toggle_buttons_visible(button_frame_name))
         self.menu_affichage.add_checkbutton(label = 'Options-Résumé', underline = 0, variable = self.v_zone3_visible, command = self.toggle_zone3_visible)
         self.menu_affichage.add_checkbutton(label = 'Keypad', underline = 0, variable = self.v_keypad_visible, command = self.toggle_keypad_visible)
         self.menu_font = tkinter.Menu(self.menu_affichage, tearoff = 0)
@@ -185,9 +202,17 @@ class Fcalc(object):
 
 
     def grid_buttons(self):
-        if self.v_buttons_visible.get():
+        grid_button = False
+        for button_frame_name in self.bts:
+            grid_button = grid_button or self.v_buttons_visible[button_frame_name].get()
+        if grid_button:
             self.buttons.grid(column = 0, row = 0, rowspan =2, sticky = tkinter.N + tkinter.E + tkinter.W)
             self.window.columnconfigure(0, minsize = 120, weight = 1)
+            for button_frame_name, v_button_frame in self.v_buttons_visible.items():
+                if v_button_frame.get():
+                    self.bts[button_frame_name].grid()
+                else:
+                    self.bts[button_frame_name].grid_forget()
         else:
             self.buttons.grid_forget()
             self.window.columnconfigure(0, minsize = 0, weight = 1)
@@ -311,8 +336,8 @@ class Fcalc(object):
             v_val.set(1)
         else:
             v_val.set(0)
-    def toggle_buttons_visible(self):
-        self.toogle(self.v_buttons_visible)
+    def toggle_buttons_visible(self, button_frame_name):
+        self.toogle(self.v_buttons_visible[button_frame_name])
         self.grid_buttons()
     def toggle_zone3_visible(self):
         self.toogle(self.v_zone3_visible)
@@ -337,7 +362,9 @@ class Fcalc(object):
             - TODO : avec option : la stack
         '''
         params = {}
-        params['buttons_visible'] = self.v_buttons_visible.get()
+        params['buttons_visible'] = {}
+        for button_frame_name in self.bts:
+            params['buttons_visible'][button_frame_name] = self.v_buttons_visible[button_frame_name].get()
         params['zone3_visible'] = self.v_zone3_visible.get()
         params['keypad_visible'] = self.v_keypad_visible.get()
         params['font'] = self.v_font.get()
@@ -357,8 +384,9 @@ class Fcalc(object):
                 self.v_auto_save_config.set(params['auto_save_config'])
             if 'auto_save_data' in params:
                 self.v_auto_save_data.set(params['auto_save_data'])
-            if 'buttons_visible' in params:
-                self.v_buttons_visible.set(params['buttons_visible'])
+            if 'buttons_visible' in params and type(params['buttons_visible'])== dict :
+                for button_frame_name, value in params['buttons_visible'].items():
+                    self.v_buttons_visible[button_frame_name].set(value)
             if 'zone3_visible' in params:
                 self.v_zone3_visible.set(params['zone3_visible'])
             if 'keypad_visible' in params:

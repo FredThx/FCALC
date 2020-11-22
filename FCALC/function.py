@@ -129,6 +129,11 @@ class Function_stack(Function):
             item = StackItem(self.fcalc.stack, None, self, args)
             self.fcalc.stack.put_fictive_items(item)
 
+class Function_n_args(Function):
+    '''Fonction n arguments ex : moyenne(n, a1,a2,...,an)
+    '''
+    pass
+
 class Function_angle_out(Function):
     '''Function qui renvoie un angle (soit deg, soit rad)
     '''
