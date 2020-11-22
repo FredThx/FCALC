@@ -154,7 +154,7 @@ class Fcalc(object):
         #Statistiques
         self.bts['stats'] = Buttonframe(self.buttons, text = "Statistiques")
         self.bts['stats'].grid(row = 4)
-        Function_n_args(self, self.bts['stats'], lambda *x : statistics.mean(List(*x)) , bt_text = "x̄", key = ["M","m"], description = "a1,...an,n Σ(a1,...an)/n: ", format = None)
+        Function_n_args(self, self.bts['stats'], lambda *x : statistics.mean(x) , bt_text = "x̄", label = "mean", key = ["M","m"], description = "a1,...an,n Σ(a1,...an)/n: ", format = None)
         # Les menus
         self.menu_barre = tkinter.Menu(self.window,tearoff = 0)
         #Fichier

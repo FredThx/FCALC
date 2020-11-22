@@ -20,6 +20,7 @@ class StackItem(tkinter.Label):
             - function          : function off the calcul (optional)
             - args              : args of the function (StackItem)
         '''
+        logging.debug("Crt StackItem : args = " +str(args))
         self.v_text = tkinter.StringVar()
         self.value = value
         self.function = function

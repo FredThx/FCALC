@@ -52,6 +52,7 @@ class Function(object):
         '''The function called by the ui
             get nb_args in the stack
             put the result(s) in the stack
+            1st part
         '''
         logging.debug("Function %s called by %s"%(self.name, self))
         has_command_line = self.fcalc.command_line()
@@ -62,18 +63,26 @@ class Function(object):
             except ValueError as e:
                 logging.info(e)
         if (not self.is_return) or (not has_command_line):
-            try:
-                if self.nb_args == "All":
-                    args = self.fcalc.stack.get_all()
-                else:
-                    args = self.fcalc.stack.get(self.nb_args)
-                logging.debug("Execute %s with args=%s"%(self, args))
-                self.execute_function(*args)
-            except Fcalc_error_stacktoosmall:
-                logging.info("Not enought arguments.")
-            except (ArithmeticError, ValueError) as e:
-                logging.info(e)
-                self.fcalc.stack.put_items(*args)
+            self._function2()
+
+    def _function2(self):
+        '''
+            get nb_args in the stack
+            put the result(s) in the stack
+            2nd part
+        '''
+        try:
+            if self.nb_args == "All":
+                args = self.fcalc.stack.get_all()
+            else:
+                args = self.fcalc.stack.get(self.nb_args)
+            logging.debug("Execute %s with args=%s"%(self, args))
+            self.execute_function(*args)
+        except Fcalc_error_stacktoosmall:
+            logging.info("Not enought arguments.")
+        except (ArithmeticError, ValueError) as e:
+            logging.info(e)
+            self.fcalc.stack.put_items(*args)
 
     def execute_function(self, *args):
         '''Execut the fonction and put result and self to stack
@@ -131,8 +140,45 @@ class Function_stack(Function):
 
 class Function_n_args(Function):
     '''Fonction n arguments ex : moyenne(n, a1,a2,...,an)
+    Le premier argument est le nombre d'arguments
     '''
-    pass
+    def _function2(self):
+        '''
+            get nb_args in the stack
+            put the result(s) in the stack
+            2nb part
+        '''
+        try:
+            arg1 = self.fcalc.stack.get(1)[0]
+            n = int(arg1.get())
+            args = self.fcalc.stack.get(n)
+            logging.debug("Execute %s with n=%s and args=%s"%(self, n, args))
+            self.execute_function(arg1, *args)
+        except Fcalc_error_stacktoosmall:
+            logging.info("Not enought arguments.")
+        except (ArithmeticError, ValueError) as e:
+            logging.info(e)
+            self.fcalc.stack.put_items(*args)
+
+    def execute_function(self, arg1, *args):
+        '''Execut the fonction and put result and self to stack
+        '''
+        values = self.function(*[item.get() for item in args])
+        args = args + tuple([arg1])
+        if type(values)!=tuple:
+            values = [values]
+        for value in values:
+            self.fcalc.stack.put_items(StackItem(self.fcalc.stack, value, self, args))
+
+    def init_format(self):
+        '''Initialise str_format : "FONCTION_NAME(%s,%s, ...)""
+        '''
+        self.str_format = self.label + "%s"
+
+    def str_detail(self, *args):
+        '''Return a string, the detail calculation
+        '''
+        return self.str_format % list([arg.str_detail() for arg in args[:-1]])
 
 class Function_angle_out(Function):
     '''Function qui renvoie un angle (soit deg, soit rad)
