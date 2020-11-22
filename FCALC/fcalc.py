@@ -154,7 +154,14 @@ class Fcalc(object):
         #Statistiques
         self.bts['stats'] = Buttonframe(self.buttons, text = "Statistiques")
         self.bts['stats'].grid(row = 4)
-        Function_n_args(self, self.bts['stats'], lambda *x : statistics.mean(x) , bt_text = "x̄", label = "mean", key = ["M","m"], description = "a1,...an,n Σ(a1,...an)/n: ", format = None)
+        Function_n_args(self, self.bts['stats'], lambda *x : statistics.mean(x) , bt_text = "x̄", label = "mean", key = ["M","m"], description = "a1,...an,n : Σ(a1,...an)/n")
+        Function_n_args(self, self.bts['stats'], lambda *x : statistics.median(x) , bt_text = "Median", label = "Median", key = [], description = "a1,...an,n : Median(a1,...an)")
+        Function_n_args(self, self.bts['stats'], lambda *x : statistics.stdev(x) , bt_text = "σ", label = "Ecartype", key = [], description = "a1,...an,n : √(variance(a1,...an))")
+        def six_sigma(*x):
+            moy = statistics.mean(x)
+            ecartype = statistics.stdev(x)
+            return (moy - 3*ecartype, moy + 3*ecartype)
+        Function_n_args(self, self.bts['stats'], six_sigma , bt_text = "6σ", label = "6σ", key = [], description = "a1,...an,n : (x̄-3σ,x̄+3σ)")
         # Les menus
         self.menu_barre = tkinter.Menu(self.window,tearoff = 0)
         #Fichier
