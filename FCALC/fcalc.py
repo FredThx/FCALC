@@ -269,7 +269,7 @@ class Fcalc(object):
         if len(self.v_command_line.get())==0:
             return None
         else:
-            return self.v_command_line.get()
+            return self.v_command_line.get().replace(',','.')
 
     @staticmethod
     def about():
