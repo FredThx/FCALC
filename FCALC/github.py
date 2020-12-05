@@ -38,4 +38,8 @@ class Github:
         '''
         last_release = self.get_last_release(**kwargs)
         if last_release and version.parse(last_release['tag_name']) > version.parse(actual_version):
-            return last_release['assets'][0]['browser_download_url']
+            try:
+                return last_release['assets'][0]['browser_download_url']
+            except KeyError:
+                pass
+            
