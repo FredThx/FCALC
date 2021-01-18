@@ -34,13 +34,18 @@ class Fcalc(object):
     github_owner = "FredThx"
     github_repo = "FCALC"
 
-    def __init__(self, title = "Calculatrice", url_help = None):
+    def __init__(self, title = "Calculatrice", url_help = None, option_gui = None):
         self.window = tkinter.Tk()
         self.path = os.path.expanduser('~')
         self.title = title
         self.url_help = url_help
         self.keys = {}
         self.window.protocol("WM_DELETE_WINDOW", self.close)
+        if option_gui:
+            try:
+                self.window.option_readfile(option_gui)
+            except:
+                logging.warning(f"Error reading {option_gui}")
         self.init_ui()
         self.check_update()
 
@@ -378,8 +383,11 @@ class Fcalc(object):
         params['window_geometry'] = self.window.geometry()
         params['options'] = self.options.params()
         params['path'] = self.path
-        with open('fcalc.json', 'w') as f:
-            json.dump(params, f)
+        try:
+            with open('fcalc.json', 'w') as f:
+                json.dump(params, f)
+        except Exception as e:
+            logging.error(f"{e}")
 
     def load(self):
         '''Load fcalc.json if exist

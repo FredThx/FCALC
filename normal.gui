@@ -1,0 +1,6 @@
+*font: arial 12
+*background: #F7F5A8
+*Button.background: #5FC3DE
+*Entry.background : #F7D5A8
+*Entry.readonlybackground: #F7F5A8
+*Combobox.font: arial 18
