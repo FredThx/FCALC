@@ -442,10 +442,10 @@ class Fcalc(object):
                             os.remove(file + ".bak")
                         os.rename(file, file + ".bak")
                     try:
-                        destination_file = wget.download(url_release, file) #TODO : un peu d'animation
+                        wget.download(url_release, file) #TODO : un peu d'animation
                         tkinter.messagebox.showinfo("Fcalc","Téléchargement réussit. L'application va redémarrer.")
                         os.system("start %s"%file)
                         self.close()
                     except:
-                        logging.info("Error downloading %s"%url)
+                        logging.info(f"Error downloading {url_release}")
                         tkinter.messagebox.showerror("Fcalc","Erreur lors du téléchargement!")
