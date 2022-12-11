@@ -1,4 +1,3 @@
-* update (check github)
 * zone de log
 * Format de nombre
   - liée à stack_item
@@ -16,7 +15,7 @@
     - 1 / 1% = 100
     - 1:00 / 0:50 = 1.2
 * multi language
-* skins
+* skins (ça commence)
 * auto-save datas
 * plugins
   * isoler les functions livrées
