@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=FCALC
+Icon=~/Github/FCALC/fcalc.ico
+Exec=~/Github/FCALC/venv/bin/python3 ~/Github/FCALC/fcalc.py
+Type=Application
+Categories=GTK;GNOME;Utility;
