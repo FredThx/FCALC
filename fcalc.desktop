@@ -1,6 +1,10 @@
 [Desktop Entry]
-Name=FCALC
-Icon=~/Github/FCALC/fcalc.ico
-Exec=~/Github/FCALC/venv/bin/python3 ~/Github/FCALC/fcalc.py
+Version=1.0
 Type=Application
-Categories=GTK;GNOME;Utility;
+Name=FCALC
+Comment=Une calculatrice 
+Exec=~/FCALC/venv/bin/python3 ~/FCALC/fcalc.py -g ~/FCALC/normal.gui --no_check_update
+Icon=~/FCALC/fcalc.ico
+Terminal=false
+Categories=Graphics;GTK;GNOME;Utility;
+

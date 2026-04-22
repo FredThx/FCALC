@@ -1,4 +1,4 @@
-tkinter
+#tkinter : must be installed (ex : apt-get install python3-tk)
 wget
 pyperclip
 FUTIL

@@ -34,7 +34,7 @@ class Fcalc(object):
     github_owner = "FredThx"
     github_repo = "FCALC"
 
-    def __init__(self, title = "Calculatrice", url_help = None, option_gui = None):
+    def __init__(self, title = "Calculatrice", url_help = None, option_gui = None, check_update = True):
         self.window = tkinter.Tk()
         self.path = os.path.expanduser('~')
         self.title = title
@@ -47,7 +47,8 @@ class Fcalc(object):
             except:
                 logging.warning(f"Error reading {option_gui}")
         self.init_ui()
-        self.check_update()
+        if check_update:
+            self.check_update()
 
     def run(self):
         self.window.mainloop()
